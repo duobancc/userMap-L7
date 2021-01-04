@@ -1,0 +1,83 @@
+
+###[销售额排名统计]
+post https://dev.huodiesoft.com/summary_api.php?action=total_turnover HTTP/1.1
+Content-Type: application/json
+
+{
+    "year": "2020",
+    "page": "1",
+    "size": "10"
+}
+
+
+###[线上线下销售额]
+post https://dev.huodiesoft.com/summary_api.php?action=tg_erp_turnover HTTP/1.1
+Content-Type: application/json
+
+{
+    "year": "2020",
+    "page": "1",
+    "size": "10"
+}
+
+
+###[商品最低售价]
+post https://dev.huodiesoft.com/summary_api.php?action=the_lowest_price HTTP/1.1
+Content-Type: application/json
+
+{
+    "year": "2020",
+    "page": "1",
+    "size": "10"
+}
+
+
+
+###[商品库商品]
+post https://dev.huodiesoft.com/summary_api.php?action=get_goods_list HTTP/1.1
+Content-Type: application/json
+
+
+
+
+###[商品月份销售额情况]
+post https://dev.huodiesoft.com/summary_api.php?action=total_turnover_by_month HTTP/1.1
+Content-Type: application/json
+
+{
+    "year": "2020",
+    "page": "1",
+    "size": "10",
+    "goodsid": "14"
+}
+
+
+
+###[商品销售占比]
+post https://dev.huodiesoft.com/summary_api.php?action=total_rate HTTP/1.1
+Content-Type: application/json
+
+{
+    "year": "2020",
+    "goodsid_list": [3,5,14],
+    "other":true
+}
+
+
+###[商品平均售价]
+post https://dev.huodiesoft.com/summary_api.php?action=the_average_price HTTP/1.1
+Content-Type: application/json
+
+{
+    "year": "2020",
+    "page": "1",
+    "size": "10"
+}
+
+###[商品平均售价]
+post https://dev.huodiesoft.com/minapi.php?op=insert_goods_data HTTP/1.1
+Content-Type: application/json
+
+{
+    "time": "202003"
+}

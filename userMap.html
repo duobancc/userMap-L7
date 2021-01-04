@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>创建地图场景</title>
+	<style>
+		html,
+		body {
+			overflow: hidden;
+			margin: 0;
+		}
+
+		#map {
+			position: absolute;
+			bottom: 0;
+			width: 100%;
+			height: 50vh;
+
+		}
+
+		#customMap {
+			position: absolute;
+			width: 100%;
+			height: 50vh;
+		}
+
+		.l7-popup-content {
+			/* background-color: transparent !important; */
+		}
+
+		.l7-popup-tip {
+			/* background-color: transparent !important; */
+		}
+	</style>
+</head>
+
+<body>
+
+
+	<div id="map"></div>
+	<div id="customMap"></div>
+
+	<script src="./modules/l7.js"></script>
+	<script src="./modules/l7-district.js"></script>
+	<script></script>
+	<script>
+
+		// import chinagData from './data/geo.json'
+
+
+		const tempData = [
+			{
+				adcode: 330000,
+				name: '浙江省',
+				memberNum: 18
+			},
+			{
+				adcode: 330000,
+				name: '湖南省',
+				memberNum: 36
+			},
+			{
+				adcode: 330000,
+				name: '青海省',
+				memberNum: 58
+			},
+			{
+				adcode: 330000,
+				name: '山东省',
+				memberNum: 79
+			}
+		]
+
+
+		// console.log( chinagData )
+
+
+		const color = [
+			"rgb(255,255,217)",
+			"rgb(237,248,177)",
+			"rgb(199,233,180)",
+			"rgb(127,205,187)",
+			"rgb(65,182,196)",
+			"rgb(29,145,192)",
+			"rgb(34,94,168)",
+			"rgb(12,44,132)"
+		];
+
+		const {
+			Scene,
+			GaodeMap,
+			District,
+			Marker,
+			Popup,
+			LineLayer,
+			PolygonLayer,
+			Control
+
+		} = L7
+		const {
+			DrillDownLayer
+		} = District
+
+
+		const customDrillDownMap = () => {
+
+			console.log('L7version: ' + L7.version)
+
+
+			// let  colors2 = ['#1a61b7', '#0e98c3', '#06d3cd' ]
+			// const colors = ['#171b2a'];
+
+			const color = [
+				"rgb(255,255,217)",
+				"rgb(237,248,177)",
+				"rgb(199,233,180)",
+				"rgb(127,205,187)",
+				"rgb(65,182,196)",
+				"rgb(29,145,192)",
+				"rgb(34,94,168)",
+				"rgb(12,44,132)"
+			];
+
+			const MyMap = new GaodeMap({
+				center: [120.58657982223511, 27.770092808917987],
+				pitch: 0,
+				style: 'dark',
+				rotation: 0,
+				zoom: 6
+			})
+
+			const scene = new Scene({
+				id: 'customMap',
+				map: MyMap,
+				logoVisible: false
+			});
+
+
+
+			fetch('https://gw.alipayobjects.com/os/bmw-prod/d6da7ac1-8b4f-4a55-93ea-e81aa08f0cf3.json')
+				.then(res => res.json())
+				.then(geo => {
+					console.log(geo.features)
+					const dataObj = {}
+					tempData.forEach(item => {
+						dataObj[item.name] = item
+					})
+
+					console.log(dataObj)
+
+					geo.features = geo.features.map(item => {
+						const name = item.properties.name
+						item.properties = {
+							...item.properties,
+							...dataObj[name]
+						}
+
+						return item
+					})
+					console.log(geo)
+
+					scene.on('loaded', () => {
+
+						const chinaPolygonLayer = new PolygonLayer({
+							autoFit: false
+						})
+							.source(geo);
+
+						chinaPolygonLayer
+							.color(
+								'memberNum',
+								(memberNum) => {
+									let d = memberNum
+									return d > 100 ?
+										color[7] :
+										d > 60 ?
+											color[6] :
+											d > 50 ?
+												color[5] :
+												d > 40 ?
+													color[4] :
+													d > 30 ?
+														color[3] :
+														d > 20 ?
+															color[2] :
+															d > 10 ?
+																color[1] :
+																color[0];
+								}
+							)
+							// .color(
+							// 	'density', (d ) => {
+							// 			console.log(d)
+							// 	})
+							.shape('fill')
+							// .active({
+							// 	color: '#00fbff'
+							// })
+							.style({
+								opacity: 1
+							})
+
+						const Layer2 = new LineLayer({
+							zIndex: 2
+						})
+							.source(geo)
+							.color('#474747')
+							.size(0.6)
+							.style({
+								opacity: 0.7,
+							})
+
+						const hightLayer = new LineLayer({
+							zIndex: 4,
+							name: 'hightLight'
+						})
+							.source({
+								type: 'FeatureCollection',
+								features: []
+							})
+							.shape('line')
+							.size(2)
+							.color('#00fbff')
+							.style({
+								opacity: 1
+							})
+
+						chinaPolygonLayer.on('mousemove', e => {
+
+							hightLayer.setData({
+								type: 'FeatureCollection',
+								features: [e.feature]
+							})
+
+							const popup = new Popup({
+								offsets: [0, 0],
+								closeButton: false
+							})
+								.setLnglat(e.lngLat)
+								.setHTML(`<div>地区: ${e.feature.properties.name}
+									</div>
+									<div>
+										数量：${e.feature.properties.memberNum ? e.feature.properties.memberNum : 0}
+										</div>
+									`)
+
+							scene.addPopup(popup)
+						})
+
+						const legend = new Control({
+							position: 'bottomright'
+
+						})
+
+						legend.onAdd = () => {
+							// let color =  ['#1947d9', '#243dc9' ,'#071a75', '#00fbff' ];
+							const color2 = [
+								"rgb(255,255,217)",
+								"rgb(237,248,177)",
+								"rgb(199,233,180)",
+								"rgb(127,205,187)",
+								"rgb(65,182,196)",
+								"rgb(29,145,192)",
+								"rgb(34,94,168)",
+								"rgb(12,44,132)"
+							];
+							let el = document.createElement('div')
+							el.className = "infolegend legend"
+							let grades = [0, 10, 20, 50, 100, 200, 500];
+							for (let i = 0; i < grades.length; i++) {
+								el.innerHTML +=
+									'<i style="background:' +
+									color2[i] +
+									'"></i> ' +
+									grades[i] +
+									(grades[i + 1] ? "–" + grades[i + 1] + "<br>" : "+");
+							}
+
+							return el
+						}
+
+						scene.addLayer(chinaPolygonLayer)
+						scene.addLayer(Layer2)
+						scene.addLayer(hightLayer)
+						scene.addControl(legend)
+
+
+					})
+
+
+				})
+
+
+
+		}
+
+
+
+
+		const DrillDownMap = () => {
+
+
+
+			const colors = ['#1947d9', '#071a75', '#243dc9'];
+			const scene = new Scene({
+				id: 'map',
+				map: new GaodeMap({
+					center: [120.58657982223511, 27.770092808917987],
+					pitch: 0,
+					style: ''
+				}),
+				logoVisible: false
+			});
+
+
+
+			scene.on('loaded', () => {
+
+				new DrillDownLayer(scene, {
+					data: [],
+					viewStart: 'Country',
+					viewEnd: 'City',
+					fill: {
+						color: {
+							field: 'x',
+							values: (x) => {
+								let d = x
+								return d > 125 ?
+									color[7] :
+									d > 120 ?
+										color[6] :
+										d > 115 ?
+											color[5] :
+											d > 110 ?
+												color[4] :
+												d > 105 ?
+													color[3] :
+													d > 100 ?
+														color[2] :
+														d > 95 ?
+															color[1] :
+															color[0];
+							}
+						},
+						activeColor: '#00fbff',
+						scale: 'identity'
+
+					},
+					popup: {
+						enable: true,
+						Html: props => {
+							return `<span>${props.NAME_CHN}</span>`;
+						}
+					}
+				})
+
+
+			})
+
+
+
+			// const popup = new Popup({
+			// 	offsets: [0, 20]
+			// }).setText('火蝶信息科技');
+
+			// const marker = new Marker()
+			// 	.setLnglat([120.58657982223511, 27.770092808917987])
+			// 	.setPopup(popup)
+
+			// scene.addMarker(marker)
+
+		}
+
+
+
+		customDrillDownMap()
+
+		// DrillDownMap()
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,2363 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+
+
+	<head>
+
+		<meta charset="UTF-8">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+		<title>火蝶云-可视化大数据</title>
+
+		<link rel="shortcut icon" href="https://www.lexiangpingou.cn/attachment/images/global/wechat.jpg">
+		<link rel="stylesheet" href="./style/index.css">
+
+	</head>
+
+
+
+	<body>
+
+		<div id="bg">
+
+			<div id="wrap">
+
+				<!-- 用户分布地图 -->
+				<div id="map"></div>
+
+				<div class="dataline l ab">
+					{{dataline}}
+				</div>
+				<div class="bbb ab">
+					<div class="left b" @click="abc()">全 屏</div>
+					<div class="right b" @click="def()">返 回</div>
+				</div>
+
+
+
+				<div class="headline l aic">
+					<span class="hhh" @click="toggle" v-trigger>火 蝶 云 大 数 据 赋 能 中 心</span>
+					<!--        <span class="img1125"></span>-->
+
+				</div>
+
+				<p class="pt l">
+
+					平台累计成交金额
+
+				</p>
+
+				<div class="qian">
+					<span class="q l">￥</span>
+					<span v-for="(item,index) in qian" :key="index" :class="['l', isNaN(+item) ? 'b' : 'a']">{{item}}</span>
+				</div>
+
+
+
+				<div class="xiao ab">
+
+					<p class="ttt l">销售额</p>
+
+					<div class="aic">
+
+						<i class="qqq q"></i><span class="zong w fw">总销售额占比</span>
+
+					</div>
+
+					<div class="jcc b1113">
+
+						<div class="q1113"></div>
+
+						<div class="w1113"></div>
+
+						<div class="e1113"></div>
+
+					</div>
+
+					<div class="s1113">
+
+						<div class="o113 w" v-for="(item,index) in xiaoshou" :key="index">
+
+							￥{{item}}万
+
+						</div>
+
+					</div>
+
+					<div class="aic xiao1115">
+
+						<i class="qqq q"></i><span class="zong w fw">销售同比增长</span>
+
+					</div>
+
+					<div class="tbzz"></div>
+
+					<div class="aic shou1115">
+
+						<i class="qqq q"></i><span class="huan w fw">销售环比增长
+
+							<div class="ab t1115">{{sjd1115}}</div>
+
+						</span>
+
+					</div>
+
+					<div class="hbzz"></div>
+
+				</div>
+
+
+
+				<div class="jiao ab">
+
+					<p class="ttt l">交易额</p>
+
+					<div class="ab j1115">{{sjd1115}}</div>
+
+					<div class="jiaoyi1115"></div>
+
+				</div>
+
+
+
+				<div class="ke ab">
+
+					<p class="ttt l">客单价</p>
+
+					<div class="box1120">
+
+						<div class="l1120">
+
+							<div class="aic">
+
+								<i class="qqq q"></i><span class="zong w fw">客单价同比增长</span>
+
+							</div>
+
+							<div class="kdj1120"></div>
+
+						</div>
+
+						<div class="r1120">
+
+							<div class="aic">
+
+								<i class="qqq q"></i><span class="huan w fw">客单价环比增长
+
+									<div class="ab t1115">{{sjd1115}}</div>
+
+								</span>
+
+							</div>
+
+							<div class="kdjhb1120"></div>
+
+						</div>
+
+					</div>
+
+					<div class="aic">
+
+						<i class="qqq q"></i><span class="huan w fw">客单价趋势
+
+							<div class="ab t1115 qs1120">{{sjd1115}}</div>
+
+						</span>
+
+					</div>
+
+					<div class="kqs1120"></div>
+
+				</div>
+
+
+
+				<div class="ding ab">
+
+					<p class="ttt l">订单量</p>
+
+					<div class="ding1120"></div>
+
+					<div class="l1120 ab">
+
+						<div v-for="(item,index) in d1120" :key="index" class="item aic">
+
+							<i class="qqq i1120" :style="{
+
+              borderColor: `${c1120[index]}4d`,
+
+              background: c1120[index],
+
+              backgroundClip: 'content-box',
+
+            }"></i>
+
+							<div class="w">{{item.name}}：<span class="s1120" :style="{color:c1120[index]}">{{item.order}}单</span></div>
+
+						</div>
+
+					</div>
+
+					<div class="aic x1120">
+
+						<i class="qqq q"></i><span class="zong w fw">订单同比增长</span>
+
+					</div>
+
+					<div class="ddtb"></div>
+
+					<div class="aic ddhb1120">
+
+						<i class="qqq q"></i><span class="huan w fw">订单环比增长
+
+							<div class="ab t1115">{{sjd1115}}</div>
+
+						</span>
+
+					</div>
+
+					<div class="hb1120"></div>
+
+					<div class="aic ddhb1120">
+
+						<i class="qqq q"></i><span class="huan w fw">订单量趋势
+
+							<div class="ab t1115">{{sjd1115}}</div>
+
+						</span>
+
+					</div>
+
+					<div class="ddl1120"></div>
+
+				</div>
+
+
+
+
+
+				<div class="zxdd ab">
+					<div class="aic t1120">
+						<i class="qqq r"></i><span class="w zx1120">最新订单</span>
+					</div>
+					<div class="tt1120">
+						<!--          <div class="i1120 w">地区</div>-->
+						<div class="i1120 w" style="margin-left: -47px;">店铺名</div>
+						<div class="i1120 w" style="margin-left: -111px;">金额</div>
+						<div class="i1120 w" style="margin-left: -111px;">类型</div>
+						<div class="i1120 w" style="margin-left: -111px;">支付方式</div>
+						<div class="i1120 w" style="margin-left: -73px;">时间</div>
+
+					</div>
+
+					<div class="tt1120" v-for="(item,index) in list" style="justify-content: flex-start;margin-left: 34px;">
+
+						<div class="i1120 w" style="text-align:left!important;color:#787A7E;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;width: 125px;">{{item.name}}</div>
+
+						<div class="i1120 w" style="color:#787A7E;margin-left: 50px;width: 50px;">{{item.price}}</div>
+						<div class="i1120 w" style="color:#787A7E;margin-left: 80px;width: 55px;">{{item.origin}}</div>
+						<div class="i1120 w" style="color:#787A7E;margin-left: 78px;width: 90px;">{{item.pay_type}}</div>
+						<div class="i1120 w" style="color:#787A7E;margin-left: 65px;">{{item.createtime}}</div>
+
+					</div>
+
+				</div>
+
+			</div>
+
+		</div>
+
+
+
+		<script src="./modules/vue.js"></script>
+
+		<script src="./modules/moment-with-locales.js"></script>
+
+		<script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.g2-3.5.1/dist/g2.min.js"></script>
+
+		<script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.data-set-0.10.1/dist/data-set.min.js"></script>
+
+		<script src="https://gw.alipayobjects.com/os/antv/assets/lib/jquery-3.2.1.min.js"></script>
+		<!-- <script src="./js/userDistribution.js"></script> -->
+		<script src="./utils/index.js"></script>
+		<!-- 	<script src="https://unpkg.com/@antv/l7"></script>
+		<script src="https://unpkg.com/@antv/l7-district"></script> -->
+
+		<script src="./modules/l7.js"></script>
+		<script src="./modules/l7-district.js"></script>
+
+		<!-- <script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.l7-1.4.6/build/L7-min.js"></script> -->
+		<script src="./api.js"></script>
+		<!-- <script src="https://webapi.amap.com/maps?v=V1.4.15&key=294e2d30cd2ed459739d42dc38de6a58"></script> -->
+
+		<script>
+			const init = () => {
+
+				moment.locale('zh-cn')
+
+				// CSS.registerProperty({
+				//
+				//   name: '--a',
+				//
+				//   syntax: '<length-percentage>',
+				//
+				//   initialValue: '0%',
+				//
+				//   inherits: true,
+				//
+				// })
+				//
+				// CSS.registerProperty({
+				//
+				//   name: '--b',
+				//
+				//   syntax: '<length-percentage>',
+				//
+				//   initialValue: '12%',
+				//
+				//   inherits: true,
+				//
+				// })
+
+			}
+
+			const pan = (aa, bb, cc, dd, dom) => {
+
+				let data2 = [];
+
+				for (let _i = 0; _i < 30; _i++) {
+
+					let _item = {};
+
+					_item.type = _i + '';
+
+					_item.value = 1;
+
+					if (_i === aa) {
+
+						_item.value = 1;
+
+					}
+
+					if (_i > aa) {
+
+						_item.value = 0;
+
+					}
+
+					data2.push(_item);
+
+				}
+
+
+
+				let chart = new G2.Chart({
+
+					container: dom,
+
+					width: 104,
+
+					height: 85,
+
+					padding: 0,
+
+				});
+
+				chart.scale({
+
+					type: {
+
+						range: [0, 1]
+
+					},
+
+					value: {
+
+						sync: true
+
+					}
+
+				});
+
+				chart.legend(false);
+
+				chart.tooltip(false);
+
+
+
+				let view3 = chart.view();
+
+				view3.source(data2);
+
+				view3.axis(false);
+
+				view3.coord('polar', {
+
+					startAngle: -10 / 8 * Math.PI,
+
+					endAngle: 2 / 8 * Math.PI,
+
+					innerRadius: 0.8,
+
+					radius: 0.9
+
+				});
+
+				view3.interval().position('type*value').color('value', bb).opacity(1).size(4);
+
+				view3.guide().text({
+
+					position: ['50%', '50%'],
+
+					content: cc,
+
+					style: {
+
+						fill: '#CBCBCB',
+
+						fontSize: 18,
+
+						textAlign: 'center',
+
+						textBaseline: 'middle'
+
+					}
+
+				});
+
+				view3.guide().text({
+
+					position: ['50%', '90%'],
+
+					content: dd,
+
+					style: {
+
+						fill: '#CBCBCB',
+
+						fontSize: 18,
+
+						textAlign: 'center',
+
+						textBaseline: 'middle'
+
+					}
+
+				});
+
+				view3.guide().arc({
+
+					zIndex: 1,
+
+					start: [0, 0.5],
+
+					end: [29, 0.5],
+
+					style: {
+
+						stroke: bb,
+
+						lineWidth: 12,
+
+						opacity: 0.3,
+
+					}
+
+				});
+
+
+
+				chart.render();
+
+			}
+
+			const t1 = ({
+
+				data,
+
+				newY = moment().format('YYYY年'),
+
+				oldY = moment().subtract(1, 'y').format('YYYY年'),
+
+				w1114 = 460,
+
+				h1114 = 160,
+
+				dom,
+
+			}) => {
+				let ds = new DataSet()
+
+				let dv = ds.createView().source(data)
+
+				dv.transform({
+
+					type: 'fold',
+
+					fields: [oldY, newY], // 展开字段集
+
+					key: 'x1114', // key字段
+
+					value: 'y1114' // value字段
+
+				})
+
+				let chart = new G2.Chart({
+
+					container: dom,
+
+					width: w1114,
+
+					height: h1114,
+
+					padding: [20, 20, 20, 50],
+
+				})
+
+				let a = (() => {
+					return Math.max.apply(Math, dv['rows'].map(item => {
+						return item.y1114
+					}))
+				})()
+
+				let b = (() => {
+					return Math.min.apply(Math, dv['rows'].map(item => {
+						return item.y1114
+					}))
+				})()
+
+				chart.source(dv, {
+
+					month: {
+
+						type: 'cat',
+
+						range: [0, 1],
+
+						alias: '月份',
+
+						// values: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
+						values: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
+
+					},
+
+					y1114: {
+
+						min: b,
+
+						max: a,
+
+						tickCount: 4,
+
+					},
+
+				})
+
+
+
+				chart.axis('y1114', {
+
+					label: {
+
+						formatter: function formatter(val) {
+
+							return val + '%'
+
+						},
+
+						textStyle: {
+
+							fill: '#00fbff', // 文本的颜色
+
+							fontSize: '12', // 文本大小
+
+							fontWeight: 'bold', // 文本粗细
+
+						}
+
+					},
+
+					line: {
+
+						lineWidth: 1, // 设置线的宽度
+
+						stroke: '#04d8ee4d', // 设置线的颜色
+
+						lineDash: [0, 0] // 设置虚线样式
+
+					},
+
+					grid: {
+
+						type: 'line',
+
+						lineStyle: {
+
+							stroke: '#04d8ee4d',
+
+							lineWidth: 1,
+
+							lineDash: [0, 0]
+
+						}
+
+					}
+
+				})
+
+				chart.axis('month', {
+
+					label: {
+
+						textStyle: {
+
+							fill: '#fff', // 文本的颜色
+
+							fontSize: '10', // 文本大小
+
+							fontWeight: 'bold', // 文本粗细
+
+						}
+
+					},
+
+					line: {
+
+						lineWidth: 1, // 设置线的宽度
+
+						stroke: '#04d8ee4d', // 设置线的颜色
+
+						lineDash: [0, 0] // 设置虚线样式
+
+					},
+
+					grid: {
+
+						type: 'line',
+
+						lineStyle: {
+
+							stroke: '#04d8ee4d',
+
+							lineWidth: 1,
+
+							lineDash: [0, 0]
+
+						}
+
+					}
+
+				})
+
+
+
+				chart.tooltip({
+
+					crosshairs: {
+
+						type: 'line',
+
+						style: {
+
+							stroke: '#fff'
+
+						},
+
+					},
+
+					itemTpl: '<li>{name}： {value}</li>',
+
+					'g2-tooltip': {
+
+						background: '#00fbff',
+
+						'box-shadow': 'none',
+
+					},
+
+				})
+
+				chart.legend('x1114', {
+
+					position: 'top',
+
+					offsetX: 150,
+
+					marker: 'circle',
+
+					textStyle: {
+						fill: '#ffffffb3'
+					}
+
+				})
+
+
+
+				chart.line()
+
+					.position('month*y1114')
+
+					.size(4)
+
+					.color('x1114', ['#2175f3', '#35f0f4'])
+
+					.shape('smooth')
+
+					.tooltip(false)
+
+				chart.area()
+
+					.position('month*y1114')
+
+					.color('x1114', ['l(270) 0:#2175f300 1:#2175f3', 'l(270) 0:#35f0f400 1:#35f0f4'])
+
+					.shape('smooth')
+
+					.tooltip('x1114*y1114', (x1114, y1114) => {
+
+						return {
+
+							name: x1114,
+
+							value: y1114 + "%"
+
+						}
+
+					})
+
+				chart.render()
+
+			}
+
+			const zhu = ({
+
+				dom,
+
+				w1115 = 460,
+
+				h1115 = 160,
+
+				data,
+
+				gsh,
+
+			}) => {
+
+				let chart = new G2.Chart({
+
+					container: dom,
+
+					width: w1115,
+
+					height: h1115,
+
+					padding: [20, 20, 20, 50],
+
+				})
+
+				chart.source(data)
+
+				let c = (() => {
+					return Math.max.apply(Math, data.map(item => {
+						return item.hbzz
+					}))
+				})()
+
+				let d = (() => {
+					return Math.min.apply(Math, data.map(item => {
+						return item.hbzz
+					}))
+				})()
+
+				chart.scale({
+
+					hbzz: {
+
+						min: d,
+
+						max: c,
+
+						tickCount: 4,
+
+					},
+
+					moment: {
+
+						type: 'cat',
+
+						alias: '月份',
+
+						values: gsh,
+
+					},
+
+				})
+
+				chart.axis('hbzz', {
+
+					label: {
+
+						formatter: function formatter(val) {
+
+							return val + '%'
+
+						},
+
+						textStyle: {
+
+							fill: '#00fbff', // 文本的颜色
+
+							fontSize: '12', // 文本大小
+
+							fontWeight: 'bold', // 文本粗细
+
+						}
+
+					},
+
+					line: {
+
+						lineWidth: 1, // 设置线的宽度
+
+						stroke: '#04d8ee4d', // 设置线的颜色
+
+						lineDash: [0, 0] // 设置虚线样式
+
+					},
+
+					grid: {
+
+						type: 'line',
+
+						lineStyle: {
+
+							stroke: '#04d8ee4d',
+
+							lineWidth: 1,
+
+							lineDash: [0, 0]
+
+						}
+
+					}
+
+				})
+
+				chart.axis('moment', {
+
+					label: {
+
+						textStyle: {
+
+							fill: '#fff', // 文本的颜色
+
+							fontSize: '10', // 文本大小
+
+							fontWeight: 'bold', // 文本粗细
+
+						}
+
+					},
+
+					line: {
+
+						lineWidth: 1, // 设置线的宽度
+
+						stroke: '#04d8ee4d', // 设置线的颜色
+
+						lineDash: [0, 0] // 设置虚线样式
+
+					},
+
+					grid: null,
+
+				})
+
+
+
+				chart.tooltip({
+
+					showTitle: false,
+
+					crosshairs: false,
+
+					itemTpl: '<li style="font-weight:bolder;">{name}：{value}</li>',
+
+					'g2-tooltip': {
+
+						background: '#00fbff',
+
+						'box-shadow': 'none',
+
+					},
+
+				})
+
+				chart.legend(false)
+
+
+
+				chart.interval()
+
+					.position('moment*hbzz')
+
+					.opacity(1)
+
+					.color('l(90) 0:#51ffff 1:#51ffff33')
+
+					.tooltip('moment*hbzz', (moment, hbzz) => {
+
+						return {
+
+							name: gsh[moment],
+
+							value: hbzz + "%"
+
+						}
+
+					})
+
+					.active({
+
+						highlight: false, // true 是否开启 highlight 效果，开启时没有激活的变灰
+
+						style: {
+
+							fill: '#51ffff',
+
+						}
+
+					})
+
+				chart.render();
+
+			}
+
+			const dan = ({
+
+				dom,
+
+				gsh,
+
+				width = 460,
+
+				height = 160,
+
+				data,
+
+			}) => {
+
+				let chart = new G2.Chart({
+
+					container: dom,
+
+					width,
+
+					height,
+
+					padding: [20, 20, 20, 60],
+
+				});
+
+				chart.source(data);
+
+				let e = (() => {
+					return Math.max.apply(Math, data.map(item => {
+						return item.value
+					}))
+				})()
+
+				chart.scale({
+
+					value: {
+
+						min: 0,
+
+						max: e,
+
+						tickCount: 5,
+
+					},
+
+					moment: {
+
+						type: 'cat',
+
+						alias: '月份',
+
+						range: [0, 1],
+
+						values: gsh,
+
+					},
+
+				})
+
+				chart.axis('value', {
+
+					label: {
+
+						formatter: function formatter(val) {
+
+							return val == 0 ? 0 : val
+
+						},
+
+						textStyle: {
+
+							fill: '#00fbff', // 文本的颜色
+
+							fontSize: '12', // 文本大小
+
+							fontWeight: 'bold', // 文本粗细
+
+						}
+
+					},
+
+					line: {
+
+						lineWidth: 1, // 设置线的宽度
+
+						stroke: '#04d8ee4d', // 设置线的颜色
+
+						lineDash: [0, 0] // 设置虚线样式
+
+					},
+
+					grid: {
+
+						type: 'line',
+
+						lineStyle: {
+
+							stroke: '#04d8ee4d',
+
+							lineWidth: 1,
+
+							lineDash: [0, 0]
+
+						}
+
+					}
+
+				})
+
+				chart.axis('moment', {
+
+					label: {
+
+						textStyle: {
+
+							fill: '#fff', // 文本的颜色
+
+							fontSize: '10', // 文本大小
+
+							fontWeight: 'bold', // 文本粗细
+
+						}
+
+					},
+
+					line: {
+
+						lineWidth: 1, // 设置线的宽度
+
+						stroke: '#04d8ee4d', // 设置线的颜色
+
+						lineDash: [0, 0] // 设置虚线样式
+
+					},
+
+					grid: null,
+
+				})
+
+				chart.tooltip({
+
+					showTitle: false,
+
+					crosshairs: false,
+
+					hideMarkers: false,
+
+					itemTpl: '<li style="font-weight:bolder;">{name}：{value}</li>',
+
+				});
+
+				chart.line()
+
+					.position('moment*value')
+
+					.color('#00fff6')
+
+					.tooltip('moment*value', (moment, value) => {
+
+						return {
+
+							name: gsh[moment],
+
+							value: value
+
+						}
+
+					})
+
+					.shape('smooth')
+
+				chart.area()
+
+					.position('moment*value')
+
+					.color('l(270) 0:#00fff600 1:#00fff6')
+
+					.shape('smooth')
+
+					.tooltip(false)
+
+				chart.render()
+
+			}
+
+			const yuan = ({
+
+				dom,
+
+				width = 460,
+
+				height = 160,
+
+				data,
+
+			}) => {
+				let dv = new DataSet.DataView();
+
+				dv.source(data).transform({
+
+					type: 'percent',
+
+					field: 'order',
+
+					dimension: 'name',
+
+					as: 'percent'
+
+				})
+
+				let chart = new G2.Chart({
+
+					container: dom,
+
+					height,
+
+					width,
+
+					padding: [60, 200, 20, 40],
+
+				})
+
+				chart.source(dv)
+
+				chart.coord('polar', {
+
+					innerRadius: 0.44
+
+				})
+
+				chart.tooltip(false)
+
+				chart.legend(false)
+
+				chart.axis(false)
+
+				chart.interval()
+
+					.position('name*percent')
+
+					.color('name', ['#1578ed', '#01f1e8', '#05c6ff'])
+
+					.label('name', {
+
+						offset: 24,
+
+						formatter: (text, item, index) => {
+
+							let point = item.point
+
+							let percent = point['percent'];
+
+							percent = (percent * 100).toFixed(2) + '%'
+
+							return percent
+
+						},
+
+						autoRotate: false,
+
+						textStyle: (text, item) => ({
+
+							fill: item.color,
+
+							fontWeight: 'bold',
+
+						})
+
+					})
+
+				chart.render()
+
+			}
+
+			const xia = ({
+
+				dom,
+
+				gsh,
+
+				width = 877,
+
+				height = 160,
+
+				data,
+
+			}) => {
+
+				let chart = new G2.Chart({
+
+					container: dom,
+
+					width,
+
+					height,
+
+					padding: [20, 20, 20, 60],
+
+				})
+
+				chart.source(data);
+
+				let f = (() => {
+					return Math.max.apply(Math, data.map(item => {
+						return item.value
+					}))
+				})()
+
+				chart.scale({
+
+					value: {
+
+						min: 0,
+
+						max: f,
+
+						tickCount: 5,
+
+					},
+
+					moment: {
+
+						type: 'cat',
+
+						alias: '月份',
+
+						range: [0, 1],
+
+						values: gsh,
+
+					},
+
+				})
+
+				chart.axis('value', {
+
+					label: {
+
+						formatter: function formatter(val) {
+
+							return val == 0 ? 0 : val
+
+						},
+
+						textStyle: {
+
+							fill: '#00fbff', // 文本的颜色
+
+							fontSize: '12', // 文本大小
+
+							fontWeight: 'bold', // 文本粗细
+
+						}
+
+					},
+
+					line: {
+
+						lineWidth: 1, // 设置线的宽度
+
+						stroke: '#04d8ee4d', // 设置线的颜色
+
+						lineDash: [0, 0] // 设置虚线样式
+
+					},
+
+					grid: {
+
+						type: 'line',
+
+						lineStyle: {
+
+							stroke: '#04d8ee4d',
+
+							lineWidth: 1,
+
+							lineDash: [0, 0]
+
+						}
+
+					}
+
+				})
+
+				chart.axis('moment', {
+
+					label: {
+
+						textStyle: {
+
+							fill: '#fff', // 文本的颜色
+
+							fontSize: '10', // 文本大小
+
+							fontWeight: 'bold', // 文本粗细
+
+						}
+
+					},
+
+					line: {
+
+						lineWidth: 1, // 设置线的宽度
+
+						stroke: '#04d8ee4d', // 设置线的颜色
+
+						lineDash: [0, 0] // 设置虚线样式
+
+					},
+
+					grid: null,
+
+				})
+
+				chart.tooltip({
+
+					showTitle: false,
+
+					crosshairs: {
+
+						type: 'line',
+
+						style: {
+
+							stroke: '#00fff6',
+
+						},
+
+						markerGroup: true,
+
+					},
+
+					hideMarkers: false,
+
+					itemTpl: '<li style="font-weight:bolder;">{name}：{value}</li>',
+
+				})
+
+				chart.line()
+
+					.position('moment*value')
+
+					.color('#00fff6')
+
+					.tooltip('moment*value', (moment, value) => {
+
+						return {
+
+							name: gsh[moment],
+
+							value: value + "元"
+
+						}
+
+					})
+
+					.shape('smooth')
+
+				chart.point()
+
+					.position('moment*value')
+
+					.color('#fff')
+
+					.size(4)
+
+					.shape('circle')
+
+					.style({
+
+						stroke: '#00fff6',
+
+						lineWidth: 2
+
+					})
+
+					.tooltip(false)
+
+				chart.render()
+
+			}
+		</script>
+
+		<script>
+			init()
+
+
+
+			let app = new Vue({
+
+				el: '#wrap',
+
+				data: {
+
+					dataline: '',
+
+					qian: [],
+
+					xiaoshou: [],
+
+					sjd1115: '',
+
+					d1120: [],
+
+					c1120: ['#ffffff', '#1578ed', '#01f1e8', '#05c6ff'],
+
+					list: [],
+
+				},
+
+				created() {
+
+					//获取当前时间
+					let date = new Date();
+					//获取当前月的第一天
+					let monthStart = date.setDate(1);
+					//获取当前月
+					let currentMonth = date.getMonth();
+					//获取到下一个月，++currentMonth表示本月+1，一元运算
+					let nextMonth = ++currentMonth;
+					//获取到下个月的第一天
+					let nextMonthFirstDay = new Date(date.getFullYear(), nextMonth, 1);
+					//一天时间的毫秒数
+					let oneDay = 1000 * 60 * 60 * 24;
+
+					//获取当前月第一天和最后一天
+					let firstDay = moment(monthStart).format("YYYY-MM-DD");
+					//nextMonthFirstDay-oneDay表示下个月的第一天减一天时间的毫秒数就是本月的最后一天
+					let lastDay = moment(nextMonthFirstDay - oneDay).format("YYYY-MM-DD");
+
+					checkMonth({
+
+						"start": firstDay,
+
+						"end": lastDay
+
+					});
+
+					setInterval(() => {
+						this.dataline = `${moment().format('YYYY年MM月DD日')}
+          ${moment().format('HH:mm:ss dddd')}`
+
+					}, 1000);
+
+					this.sjd1115 = `${moment().subtract(1, 'y').format('YYYY')}-${moment().subtract(0, 'y').format('YYYY')}年`
+
+				},
+
+				async mounted() {
+
+					let [{
+
+							data: axb0,
+
+						},
+
+						{
+
+							data: axb1,
+
+						},
+
+						{
+
+							data: axb2,
+
+						},
+
+						{
+
+							data: axb3,
+
+						},
+
+						{
+
+							data: {
+								netsales: axb4
+							},
+
+						},
+
+						{
+
+							data: axb5,
+
+						},
+
+						{
+
+							data: axb6,
+
+						},
+
+						{
+
+							data: axb7,
+
+						},
+
+						{
+
+							data: axb8,
+
+						},
+
+						{
+
+							data: axb9,
+
+						},
+
+						{
+
+							data: axb10,
+
+						},
+
+						{
+
+							data: axb11,
+
+						},
+
+						{
+
+							data: axb12,
+
+						}
+
+					] = await Promise.all([
+						proportion(),
+
+						tbUp({
+
+							"startyear": "2019",
+
+							"endyear": "2020"
+
+						}),
+
+						hbUp({
+
+							"startyear": "2020",
+
+						}),
+
+						turnover({
+
+							"startyear": "2019",
+
+						}),
+
+						overall(),
+
+						ktbUp({
+
+							"startyear": "2018",
+
+							"endyear": "2019"
+
+						}),
+
+						khbUp({
+
+							"startyear": "2020",
+
+						}),
+
+						kmtbUp({
+
+							"startyear": "2019",
+
+						}),
+
+						orderamount(),
+
+						otbUp({
+
+							"startyear": "2018",
+
+							"endyear": "2019"
+
+						}),
+
+						ohbUp({
+
+							"startyear": "2020",
+
+						}),
+
+						orderTrend({
+
+							"startyear": "2019",
+
+						}),
+
+						orderList({
+							"time": moment().format('YYYY-MM-DD HH:mm:ss')
+						})
+
+					])
+
+					this.qian = [...(Math.round(axb4 - axb12[1][0]['money'])).toLocaleString('zh-cn')]
+					this.xiaoshou = [axb0[0].netsales, axb0[1].netsales, axb0[2].netsales].map((i) => {
+
+						return i.toLocaleString('zh-cn')
+
+					})
+
+					let zhi = axb4 - axb12[1][0]['money']
+					let syj = axb0[0].netsales
+					let gzh = axb0[1].netsales
+					let xcx = axb0[2].netsales
+					let lin = this
+					if (axb12[0].length > 0) {
+						let time = 300000 / axb12[0].length
+						let num = 0
+						setTimeout(function() {
+							zhi += parseInt(axb12[0][num]['price']) ? parseInt(axb12[0][num]['price']) : 0
+							lin.list.unshift(axb12[0][num])
+							if (lin.list.length > 5) {
+								lin.list.pop()
+							}
+							lin.qian = [...(Math.round(zhi)).toLocaleString('zh-cn')]
+
+							if (axb12[0][num]['origin'] == '收银机') {
+								syj += parseFloat(axb12[0][num]['price']) ? axb12[0][num]['price'] / 10000 : 0
+							} else if (axb12[0][num]['origin'] == '公众号') {
+								gzh += parseFloat(axb12[0][num]['price']) ? axb12[0][num]['price'] / 10000 : 0
+							} else {
+								xcx += parseFloat(axb12[0][num]['price']) ? axb12[0][num]['price'] / 10000 : 0
+							}
+
+							lin.d1120[0]['order'] += 1
+							for (let i = 0; i < lin.d1120.length; i++) {
+								if (lin.d1120[i]['name'] === axb12[0][num]['origin']) {
+									lin.d1120[i]['order'] += 1
+								}
+							}
+
+							lin.xiaoshou = [Math.floor(syj * 100) / 100, Math.floor(gzh * 100) / 100, Math.floor(xcx * 100) / 100].map(
+								(i) => {
+									return i.toLocaleString('zh-cn')
+								})
+							num++
+						}, 0)
+
+						let ds = setInterval(() => {
+							console.log(this.d1120)
+
+							zhi += parseInt(axb12[0][num]['price']) ? parseInt(axb12[0][num]['price']) : 0
+							this.list.unshift(axb12[0][num])
+							if (this.list.length > 5) {
+								this.list.pop()
+							}
+							this.qian = [...(Math.round(zhi)).toLocaleString('zh-cn')]
+
+							if (axb12[0][num]['origin'] == '收银机') {
+								syj += parseFloat(axb12[0][num]['price']) ? axb12[0][num]['price'] / 10000 : 0
+							} else if (axb12[0][num]['origin'] == '公众号') {
+								gzh += parseFloat(axb12[0][num]['price']) ? axb12[0][num]['price'] / 10000 : 0
+							} else {
+								xcx += parseFloat(axb12[0][num]['price']) ? axb12[0][num]['price'] / 10000 : 0
+							}
+
+							this.d1120[0]['order'] += 1
+							for (let i = 0; i < this.d1120.length; i++) {
+								if (this.d1120[i]['name'] === axb12[0][num]['origin']) {
+									this.d1120[i]['order'] += 1
+								}
+							}
+
+							this.xiaoshou = [Math.floor(syj * 100) / 100, Math.floor(gzh * 100) / 100, Math.floor(xcx * 100) / 100].map(
+								(i) => {
+									return i.toLocaleString('zh-cn')
+								})
+
+							num++;
+							if (num >= axb12[0].length) {
+								clearInterval(ds);
+							}
+						}, time);
+					}
+
+					setInterval(() => {
+						orderList({
+							"time": moment().format('YYYY-MM-DD HH:mm:ss')
+						}).then(function(res) {
+							if (res['data'][0].length > 0) {
+								let time = 300000 / res['data'][0].length
+								let num = 0
+								let ds2 = setInterval(() => {
+									zhi += parseInt(res['data'][0][num]['price']) ? parseInt(res['data'][0][num]['price']) : 0
+									lin.list.unshift(res['data'][0][num])
+									if (lin.list.length > 5) {
+										lin.list.pop()
+									}
+									lin.qian = [...(Math.round(zhi)).toLocaleString('zh-cn')]
+
+									if (res['data'][0][num]['origin'] == '收银机') {
+										syj += parseFloat(res['data'][0][num]['price']) ? res['data'][0][num]['price'] / 10000 : 0
+									} else if (res['data'][0][num]['origin'] == '公众号') {
+										gzh += parseFloat(res['data'][0][num]['price']) ? res['data'][0][num]['price'] / 10000 : 0
+									} else {
+										xcx += parseFloat(res['data'][0][num]['price']) ? res['data'][0][num]['price'] / 10000 : 0
+									}
+
+									lin.xiaoshou = [Math.floor(syj * 100) / 100, Math.floor(gzh * 100) / 100, Math.floor(xcx * 100) / 100]
+										.map((i) => {
+											return i.toLocaleString('zh-cn')
+										})
+
+									lin.d1120[0]['order'] += 1
+									for (let i = 0; i < lin.d1120.length; i++) {
+										if (lin.d1120[i]['name'] === res['data'][0][num]['origin']) {
+											lin.d1120[i]['order'] += 1
+										}
+									}
+									console.log('内容', syj, gzh, xcx)
+
+									num++;
+									if (num >= res['data'][0].length) {
+										clearInterval(ds2);
+									}
+								}, time);
+							}
+						})
+					}, 300000);
+
+
+					let data1114 = []
+					// console.log(axb1)
+					data1114 = axb1.map((item, index) => ({
+
+						month: index,
+
+						"2019年": parseInt(item.qb),
+
+						"2020年": parseInt(item.hb),
+
+					}))
+
+
+
+
+					let data1115 = [],
+
+						m1115 = []
+
+					for (let i = 0; i < axb2.length; i++) {
+
+						// m1115.push(moment().subtract(11 - i, 'M').format('MMMM'))
+						m1115.push(axb2[i].month + '月')
+					}
+					// console.log(axb2)
+					data1115 = axb2.map((item, index) => ({
+
+						moment: index,
+
+						hbzz: parseFloat(item.hb),
+
+					}))
+
+
+
+					let dan1115 = []
+
+					dan1115 = axb3.map((item, index) => ({
+
+						moment: index,
+
+						value: parseFloat(item.money),
+
+					}))
+
+
+
+					let data1120 = []
+
+					data1120 = axb8.map((item, index) => ({
+
+						order: +item.orderamount,
+
+						name: item.channel,
+
+					}))
+
+
+
+					let datar1120 = []
+
+					datar1120 = axb9.map((item, index) => ({
+						month: index,
+
+						"2019年": parseFloat(item.hb),
+
+						"2020年": parseFloat(item.qb)
+
+					}))
+
+
+
+					let hb1120 = []
+
+					hb1120 = axb10.map((item, index) => ({
+
+						moment: index,
+
+						hbzz: parseFloat(item.hb)
+
+					}))
+
+
+
+					let dan1120 = []
+
+					dan1120 = axb11.map((item, index) => ({
+
+						moment: index,
+
+						value: +item.orderamount,
+
+					}))
+
+
+
+					let kdj1120 = []
+
+					kdj1120 = axb5.map((item, index) => ({
+
+						month: index,
+
+						"2019年": parseFloat(item.qb),
+
+						"2020年": parseFloat(item.hb)
+
+					}))
+
+
+
+					let kdjhb1120 = []
+
+					kdjhb1120 = axb6.map((item, index) => ({
+
+						moment: index,
+
+						hbzz: parseFloat(item.hb),
+
+					}))
+
+
+
+					let kqs1120 = []
+
+					kqs1120 = axb7.map((item, index) => ({
+
+						moment: index,
+
+						value: parseFloat(item.qb),
+
+					}))
+
+
+
+					pan(Math.round(0.29 * parseInt(axb0[0].zb)), 'yellow', '收银机', axb0[0].zb, document.querySelector('.q1113'))
+
+					pan(Math.round(0.29 * parseInt(axb0[1].zb)), '#00fbff', '公众号', axb0[1].zb, document.querySelector('.w1113'))
+
+					pan(Math.round(0.29 * parseInt(axb0[2].zb)), '#2bccff', '小程序', axb0[2].zb, document.querySelector('.e1113'))
+
+					t1({
+
+						data: data1114,
+
+						dom: document.querySelector('.tbzz')
+
+					})
+
+					t1({
+
+						data: datar1120,
+
+						dom: document.querySelector('.ddtb')
+
+					})
+
+					t1({
+
+						data: kdj1120,
+
+						dom: document.querySelector('.kdj1120'),
+
+						w1114: 449,
+
+					})
+
+					zhu({
+
+						dom: document.querySelector('.hbzz'),
+
+						data: data1115,
+
+						gsh: m1115,
+
+					})
+
+					zhu({
+
+						dom: document.querySelector('.hb1120'),
+
+						data: hb1120,
+
+						gsh: m1115,
+
+					})
+
+					zhu({
+
+						dom: document.querySelector('.kdjhb1120'),
+
+						data: kdjhb1120,
+
+						gsh: m1115,
+
+						w1115: 449,
+
+					})
+
+					dan({
+
+						dom: document.querySelector('.jiaoyi1115'),
+
+						gsh: m1115,
+
+						data: dan1115,
+
+					})
+
+					dan({
+
+						dom: document.querySelector('.ddl1120'),
+
+						gsh: m1115,
+
+						data: dan1120,
+
+					})
+
+					xia({
+
+						dom: document.querySelector('.kqs1120'),
+
+						gsh: m1115,
+
+						data: kqs1120,
+
+					})
+
+					yuan({
+
+						dom: document.querySelector('.ding1120'),
+
+						data: data1120,
+
+						height: 250,
+
+					})
+
+					data1120.unshift({
+
+						name: '总单数',
+
+						order: data1120.reduce((a, b) => {
+
+							return a + b.order
+
+						}, 0)
+
+					})
+
+
+					this.d1120 = data1120
+
+				},
+
+				methods: {
+					// 全屏
+					abc: function() {
+						let element = document.documentElement
+						if (element.requestFullscreen) {
+							element.requestFullscreen();
+						} else if (element.mozRequestFullScreen) {
+							element.mozRequestFullScreen();
+						} else if (element.webkitRequestFullscreen) {
+							element.webkitRequestFullscreen();
+						} else if (element.msRequestFullscreen) {
+							element.msRequestFullscreen();
+						}
+					},
+
+					// 返回首页
+					def: function() {
+						let regex = /\&uniacid=(.+?)\&/g;
+						let uniacid = regex.exec(window.location.href);
+						if (uniacid[1] == 33 || uniacid[1] == 53 || uniacid[1] == 826) {
+							// window.location.href = "https://dev.huodiesoft.com/web/index.php?c=site&a=entry&m=lexiangpingou&do=data&ac=visualization_data&";
+							window.open("https://dev.huodiesoft.com/web/index.php?c=site&a=entry&m=lexiangpingou&do=data&ac=big_data&");
+						} else {
+							window.location.href =
+								"https://dev.huodiesoft.com/web/index.php?c=site&a=entry&m=lexiangpingou&do=data&ac=sjgk_data&";
+						}
+					},
+					toggle: function(ele) {
+						let s = 0;
+						let e = 12;
+						setInterval(function() {
+							s++
+							e++
+							ele.path[0].style.background = 'linear-gradient(109deg, #04d8ee ' + s + '%, #fff, #04d8ee ' + e + '%)';
+							if (e >= 100) {
+								s = 0
+								e = 12
+							}
+						}, 50)
+					},
+					seeUserDistributionMap: (e) => {
+						console.log('查看用户分布')
+						window.location.href = "userMap.html"
+					}
+				},
+
+				directives: {
+					trigger: {
+						inserted(el, binging) {
+							el.click()
+						}
+					}
+				}
+			})
+		</script>
+
+
+		<script>
+			console.log('L7version: ' + L7.version)
+
+			const color = [
+				"rgb(255,255,217)",
+				"rgb(237,248,177)",
+				"rgb(199,233,180)",
+				"rgb(127,205,187)",
+				"rgb(65,182,196)",
+				"rgb(29,145,192)",
+				"rgb(34,94,168)",
+				"rgb(12,44,132)"
+			];
+			const colors = ['#1947d9', '#071a75', '#243dc9'];
+
+
+			const {
+				Scene,
+				GaodeMap,
+				District,
+				Marker,
+				Popup,
+				LineLayer,
+				PolygonLayer,
+				Control
+			} = L7
+			const {
+				DrillDownLayer
+			} = District
+
+			const customDrillDownMap = () => {
+
+				console.log('L7version: ' + L7.version)
+
+
+				// let  colors2 = ['#1a61b7', '#0e98c3', '#06d3cd' ]
+				// const colors = ['#171b2a'];
+
+				const color = [
+					"rgb(255,255,217)",
+					"rgb(237,248,177)",
+					"rgb(199,233,180)",
+					"rgb(127,205,187)",
+					"rgb(65,182,196)",
+					"rgb(29,145,192)",
+					"rgb(34,94,168)",
+					"rgb(12,44,132)"
+				];
+
+				const MyMap = new GaodeMap({
+					center: [120.58657982223511, 27.770092808917987],
+					pitch: 0,
+					style: 'dark',
+					zoom: 6
+				})
+
+				const scene = new Scene({
+					id: 'map',
+					map: MyMap
+				});
+
+				scene.on('loaded', () => {
+					fetch('https://gw.alipayobjects.com/os/bmw-prod/d6da7ac1-8b4f-4a55-93ea-e81aa08f0cf3.json')
+						.then(res => res.json())
+						.then(data => {
+							console.log(data)
+							const chinaPolygonLayer = new PolygonLayer({
+									autoFit: true
+								})
+								.source(data);
+
+							chinaPolygonLayer
+								.color(
+									'density',
+									() => {
+										let d = 200
+										return d > 1000 ?
+											color[7] :
+											d > 500 ?
+											color[6] :
+											d > 200 ?
+											color[5] :
+											d > 100 ?
+											color[4] :
+											d > 50 ?
+											color[3] :
+											d > 20 ?
+											color[2] :
+											d > 10 ?
+											color[1] :
+											color[0];
+									}
+								)
+								// .color(
+								// 	'density', (d ) => {
+								// 			console.log(d)
+								// 	})
+								.shape('fill')
+								// .active({
+								// 	color: '#00fbff'
+								// })
+								.style({
+									opacity: 1
+								})
+
+							const Layer2 = new LineLayer({
+									zIndex: 2
+								})
+								.source(data)
+								.color('#474747')
+								.size(0.6)
+								.style({
+									opacity: 0.7,
+								})
+
+							const hightLayer = new LineLayer({
+									zIndex: 4,
+									name: 'hightLight'
+								})
+								.source({
+									type: 'FeatureCollection',
+									features: []
+								})
+								.shape('line')
+								.size(2)
+								.color('#00fbff')
+								.style({
+									opacity: 1
+								})
+
+							chinaPolygonLayer.on('mousemove', e => {
+
+								hightLayer.setData({
+									type: 'FeatureCollection',
+									features: [e.feature]
+								})
+
+								const popup = new Popup({
+										offsets: [0, 0],
+										closeButton: false
+									})
+									.setLnglat(e.lngLat)
+									.setHTML(`<span>地区: ${e.feature.properties.name}</span>`)
+
+								scene.addPopup(popup)
+							})
+
+							const legend = new Control({
+								position: 'bottomright'
+
+							})
+
+							legend.onAdd = () => {
+								// let color =  ['#1947d9', '#243dc9' ,'#071a75', '#00fbff' ];
+								const color2 = [
+									"rgb(255,255,217)",
+									"rgb(237,248,177)",
+									"rgb(199,233,180)",
+									"rgb(127,205,187)",
+									"rgb(65,182,196)",
+									"rgb(29,145,192)",
+									"rgb(34,94,168)",
+									"rgb(12,44,132)"
+								];
+								let el = document.createElement('div')
+								el.className = "infolegend legend"
+								let grades = [0, 10, 20, 50, 100, 200, 500];
+								for (let i = 0; i < grades.length; i++) {
+									el.innerHTML +=
+										'<i style="background:' +
+										color2[i] +
+										'"></i> ' +
+										grades[i] +
+										(grades[i + 1] ? "–" + grades[i + 1] + "<br>" : "+");
+								}
+
+								return el
+							}
+
+
+
+							scene.addLayer(chinaPolygonLayer)
+							scene.addLayer(Layer2)
+							scene.addLayer(hightLayer)
+							scene.addControl(legend)
+
+						})
+				})
+
+			}
+
+
+			const DrillDownMap = () => {
+
+				const MyMap = new GaodeMap({
+					center: [120.58657982223511, 27.770092808917987],
+					pitch: 0,
+					style: 'dark',
+					zoom: 6
+				})
+
+				const scene = new Scene({
+					id: 'map',
+					map: MyMap,
+					logoVisible: false
+				})
+
+				scene.on('loaded', () => {
+
+				const drillLayer =	new DrillDownLayer(scene, {
+						data: [
+							
+						],
+						provinceData: [
+							{ member: 36},
+							{ member: 36},
+							{ member: 36},
+							{ member: 36},
+						],
+						viewStart: 'Country',
+						viewEnd: 'City',
+						fill: {
+							color: {
+								field: 'x',
+								values: (x) => {
+									let d = x
+									return d > 125 ?
+										color[7] :
+										d > 120 ?
+										color[6] :
+										d > 115 ?
+										color[5] :
+										d > 110 ?
+										color[4] :
+										d > 105 ?
+										color[3] :
+										d > 100 ?
+										color[2] :
+										d > 95 ?
+										color[1] :
+										color[0];
+								}
+							},
+							activeColor: '#00fbff',
+							scale: 'identity'
+
+						},
+						popup: {
+							enable: true,
+							Html: props => {
+								return `<span>${props.NAME_CHN}</span>`;
+							}
+						}
+					});
+					
+					drillLayer.drillDown(
+					{
+						adcode: '110100',
+						data: [
+							
+						]
+					}
+					)
+
+
+				})
+
+
+
+			}
+
+			DrillDownMap()
+		</script>
+
+	</body>
+
+
+
+</html>

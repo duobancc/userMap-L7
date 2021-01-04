@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+
+        <meta charset="UTF-8">
+      
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      
+        <title>火蝶云-可视化大数据</title>
+      
+        <link rel="stylesheet" href="../addons/lexiangpingou/web/view/default/data/html/style/product.css">
+        <link rel="shortcut icon" href="https://www.lexiangpingou.cn/attachment/images/global/wechat.jpg">
+        <link rel="stylesheet" href="../addons/lexiangpingou/web/view/default/data/html/style/index.css">
+
+        <script src="https://cdn.jsdelivr.net/npm/echarts@4.6.0/dist/echarts.min.js"></script>
+        
+    </head>
+<body>
+    <div class="product_box" id="wrap">
+        <!--<div class="page_back">-->
+            <!--<a href="https://dev.huodiesoft.com/web/index.php?c=site&a=entry&m=lexiangpingou&do=data&ac=visualization_data&op=dashuju&uniacid=53&mode=2">-->
+                <!--<img src="../addons/lexiangpingou/web/view/default/data/html/img/left.png" alt="">-->
+            <!--</a>-->
+           <!---->
+        <!--</div>-->
+        <!--<div class="page_go">-->
+            <!--<a href="#">-->
+                <!--<img src="../addons/lexiangpingou/web/view/default/data/html/img/right.png" alt="">-->
+            <!--</a>-->
+            <!---->
+        <!--</div>-->
+        <div class="product_header">
+            <div class="header_time">
+                {{dataline}}
+            </div>
+            <div class="header_title">
+                <div class="headline l aic">
+                    <span class="hhh" @click="toggle" v-trigger>火 蝶 云 大 数 据 赋 能 中 心</span>
+                  </div>
+            </div>
+            <div class="header_button">
+                <div class="bbb ab">
+
+                    <div class="left b" @click="back()">全 屏</div>
+              
+                    <div class="right b" @click="backindex()">返 回</div>
+              
+                  </div>
+            </div>
+        </div>
+        <div class="header_btn">
+            <div class="btn_left">
+                <div class="left_1">
+                    上一年 
+                </div>
+                <div class="left_2">
+                    下一年
+                </div>
+            </div>
+            <div class="btn_right">
+                <div class="right_1">
+                    本年数据
+                </div>
+                <div class="right_2">
+                    年度选择
+                </div>
+            </div>
+        </div>
+        <div class="content_box">
+            <div class="box_tongjilist" style="position: relative;">
+                <div class="transdata1">
+                    <ul class="tody-table-header2">
+                     <li>序号</li>
+                     <li>商品名称</li>
+                     <li>销售总额</li>
+                     <li>排名情况</li>
+                    </ul>
+                    <div id="detetion-box2" class="scrollNews">
+                        <div class="dd" id="Scroll">
+                            <ul class="ullist" v-for="(item,index) in transdata1" :key="index">
+                                <li>{{index+1}}</li>
+                                <li>{{item.goodsname}}</li>
+                                <li>{{item.total_turnover}}</li>
+                                <li>
+                                    <span v-if="item.status==1">{{item.sequence}}名 <img style="padding-top: 13px;" src="../addons/lexiangpingou/web/view/default/data/html/img/up34.png" alt=""></span>
+                                    <span v-if="item.status==0">{{item.sequence}}名 <img style="padding-top: 13px;"  src="../addons/lexiangpingou/web/view/default/data/html/img/down35.png" alt=""></span>
+                                </li>
+                            </ul>  
+
+                        </div>
+                      
+                    </div>
+                 </div>
+                 <div class="pagelist" style="position: absolute;bottom: 0px; color: #0b8b94;height: 60px;width: 100%;line-height: 60px;">
+                    <ul style="display: flex; justify-content: space-around;">
+                        <li class="pagelist_up">上一条</li>
+                        <li class="pagelist_down">下一条</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="box_right">
+                <div class="box_right_1">
+                    <!-- 上面的 -->
+                    <div class="box_right_1_1" style="position: relative;">
+                        <!-- 上面得第一个 -->
+                        <div class="box_right_1_1_title">线上线下销售额\\\</div>
+                        <div style="width: 417px;height: 347px;margin-top: 50px;" id="box_right_1_1"></div>
+                        <div style="width: 60px;height: 100%;position: absolute;right: 0px;top:0px">
+                            <ul style="display: flex;flex-direction: column;justify-content: space-around; color: #0b8c96;text-align: center;height: 100%;">
+                               
+                                <li class="box_right_1_1_title_pageup" style="transform: rotate(-90deg);width: 100%;text-align: center;">下一条</li>
+                                <li class="box_right_1_1_title_pagedown" style="transform: rotate(-90deg);width: 100%;text-align: center;">上一条</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="box_right_1_2" style = 'position:relative;'>
+                        <div class="box_right_1_1_title">商品最低售价\\\</div>
+                        <!-- 上面的第二个 -->
+                        <div id="box_right_1_2" style="width: 278px;height: 288px;margin-top: 50px;">
+                            <div class="box_right_1_2_list" style="font-size:12px;">
+                                    <div class="cc" style="overflow: hidden;">
+                                        <ul class="box_right_1_2_list_ul">
+                                            <li v-for="(item,index) in the_lowest_price" :key="index">
+                                                <p style="width: 86px;text-align: center;color: #fff;">{{item.goodsname}}</p>
+                                                <div class="progress" style="width: 200px;">
+                                                    <p :style="'width:' + item.lowest_price_rate  + '%'" style="border-radius:30px;background-image: linear-gradient(to right, #1e5af3 , #03c7fc);height: 16px;"></p>
+                                                </div>
+                                                
+                                                <p style="color:#03c7fc;">￥{{item.the_lowest_price}}</p>
+                                            </li>
+                                        </ul>
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="pagelist" style="position: absolute;bottom: 0px; color: #0b8b94;height: 57px;width: 100%;line-height: 57px;">
+                            <ul style="display: flex; justify-content: space-around;">
+                                <li class="pagelist1_up">上一条</li>
+                                <li class="pagelist1_down">下一条</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="box_right_1_3">
+                        <!-- 上面的第三个 -->
+                        <div id='box_right_1_3_1' style="width: 100%;height: 215px;"></div>
+                        <div id='box_right_1_3_2' style="width: 100%;height: 215px;"></div>
+                    </div>
+                </div>
+                <div class="box_right_2">
+                    <!-- 下面得 -->
+                    <div class="box_right_2_1">
+                        <!-- 下面的第一个 -->
+                        <div class="box_right_1_1_select">选择商品</div>
+                        <div class="box_right_1_1_option" style="display: none;">
+                            <ul class="box_right_1_1_option_list" style="height: 213px;overflow-y: scroll;">
+                                <li v-for="(item,index) in get_goods_list" :key="item.goodsid" style="width: 130px;height: 42px;border:1px solod #0b8d99;border-top:0px;text-align: center;line-height: 42px;">
+                                   {{item.goodsname}}
+                                    <span style="opacity: 0;position: fixed;">{{item.goodsid}}</span>
+                                    <a  style="opacity: 0;position: fixed;">{{item.goodsname}}</a>
+                                </li>
+                               
+                            </ul>
+                        </div> 
+                        <div class="box_right_1_1_title" style="left: 60px;top: 38px;">商品月份销额情况\\\</div>
+                        <div id="box_right_2_1" style="width:790px;height:400px;margin-top: 62px;"></div>
+                    </div>
+                    <div class="box_right_2_2" style="position: relative;">
+                        <!-- 下面的第二个 -->
+                        <div class="box_right_1_1_title" style="left: 30px;top: 18px;">商品平均售价\\\</div>
+                        <div class="box_right_1_1_content">
+                             <div id="box_right_1_1_canvas" style="width: 393px;height: 455px;">
+                               
+                             </div>
+                             <div style="width: 60px;height: 100%;position: absolute;right: 0px;top:0px">
+                                <ul style="display: flex;flex-direction: column;justify-content: space-around; color: #0b8c96;text-align: center;height: 100%;">
+                                    <li class="box_right_1_1_title_pageup1" style="transform: rotate(-90deg);width: 100%;text-align: center;">下一条</li>
+                                    <li class="box_right_1_1_title_pagedown1" style="transform: rotate(-90deg);width: 100%;text-align: center;">上一条</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div> 
+
+            </div>
+        </div>
+        
+    </div>
+
+
+
+
+    <script src="../addons/lexiangpingou/web/view/default/data/html/modules/vue.js"></script>
+
+    <script src="../addons/lexiangpingou/web/view/default/data/html/modules/moment-with-locales.js"></script>
+    
+    <script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.g2-3.5.1/dist/g2.min.js"></script>
+    
+    <script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.data-set-0.10.1/dist/data-set.min.js"></script>
+    
+    <script src="https://gw.alipayobjects.com/os/antv/assets/lib/jquery-3.2.1.min.js"></script>
+    
+    <script src="../addons/lexiangpingou/web/view/default/data/html/utils/index.js"></script>
+    
+    <script src="../addons/lexiangpingou/web/view/default/data/html/api.js"></script>
+
+    
+
+<script>
+    
+  window.onload = function (){
+    var keyLight = '2'
+    $(document).keydown(function(e){
+    //    alert(e.keyCode) 
+       if(e.keyCode=='32'&&keyLight=='2'){
+            // console.log(keyLight)
+            keyLight='3'
+            console.log(keyLight)  
+       }else if(e.keyCode=='32'&&keyLight=='3'){
+            
+            keyLight='2'
+            console.log(keyLight)  
+       }
+       
+    })
+    
+    var productList;
+    var $this = $(".scrollNews");
+    var scrollTimer;
+    $('.box_tongjilist').hover(function () {
+        clearInterval(scrollTimer);
+    }, function () {
+            scrollTimer = setInterval(function () {
+                if(keyLight=='3'){
+                    scrollNews($this);
+                }
+            }, 3000);
+        
+    }).trigger("mouseleave");
+
+    function scrollNews(obj) {
+        var $self = obj.find(".dd");
+        var lineHeight = $self.find("ul:first").height();
+        $self.animate({
+            "marginTop": -lineHeight + "px"
+        }, 600, function () {
+            $self.css({
+                marginTop: 0
+            }).find("ul:first").appendTo($self);
+        })
+    }
+    var lineHeight = $(".ullist").height()
+    $('.pagelist_up').on('click',function(){
+        $(".scrollNews").find('.dd').animate({
+            "marginTop": lineHeight + "px"
+        })  
+    })
+    $('.pagelist_down').on('click',function(){
+        $(".scrollNews").find('.dd').animate({
+            "marginTop": -lineHeight + "px"
+        })  
+    })
+    var $scroll_list = $('.box_right_1_2_list')
+    var scrolltime;
+    $('.box_right_1_2').hover(function () {
+        clearInterval(scrolltime);
+    }, function () {
+        
+            scrolltime = setInterval(function () {
+                if(keyLight=='3'){
+                    scrollNews2($scroll_list);
+                }
+            }, 3000);
+        
+        
+    }).trigger("mouseleave");
+    function scrollNews2(obj) {
+        var $self = obj.find("ul");
+        var lineHeight = $self.find("li:first").height();
+        $self.animate({
+            "marginTop": -lineHeight + "px"
+        }, 600, function () {
+            $self.css({
+                marginTop: 0
+            })
+        })
+    }
+    var lineHeight1 = $scroll_list.find('ul').find("li:first").height()
+    $('.pagelist1_up').on('click',function(){
+        $scroll_list.find('ul').animate({
+            "marginTop": lineHeight1 + "px"
+        }) 
+    })
+    $('.pagelist1_down').on('click',function(){
+        $scroll_list.find('ul').animate({
+            "marginTop": -lineHeight1 + "px"
+        })  
+    })
+
+    var box_right_1_1_dom = document.getElementsByClassName('box_right_1_1')
+    // if(!box_right_1_1_dom){
+    //     return false;
+    // }
+    var box_right_1_1 = echarts.init(document.getElementById('box_right_1_1'));
+    var box_right_1_1_option = {
+        grid: {
+            show: false,
+            borderWidth: 0,//这样所有的坐标轴都没有了
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'cross',
+                label: {
+                    backgroundColor: '#283b56'
+                }
+            }
+        },
+        legend: {
+            data:['线下销额', '线上销额'],
+            textStyle:{
+                color:"#02dbdf"
+            }
+        },
+        dataZoom: {
+            show: false,
+            start: 0,
+            end: 100
+        },
+        xAxis: [
+            {
+                type: 'category',
+                splitLine:{
+                        show:false
+                    },
+                axisLine: {
+                    lineStyle: {
+                        color: "#446fbd",
+                        width:1,
+                    },
+                    textStyle:{
+                        color:'#00fbff'
+                    }
+                },
+                boundaryGap: true,
+                data: (function (){
+                    var now = new Date();
+                    var res = [];
+                    var len = 10;
+                   
+                    return res;
+                })(),
+                axisLabel: {
+                    interval: 0,
+                    rotate: 45,
+                    color:'#8cbbcd'
+                },
+
+            },
+            {
+                type: 'category',
+                splitLine:{
+                        show:false
+                    },
+                    axisLine: {
+                    lineStyle: {
+                        color: "#446fbd",
+                    }
+                },
+                boundaryGap: true,
+                data: (function (){
+                    var res = [];
+                    var len = 10;
+                    while (len--) {
+                        res.push(10 - len - 1);
+                    }
+                    return res;
+                })()
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value',
+                scale: true,
+                name: '线下销额',
+                max: 30,
+                min: 0,
+                boundaryGap: [0.2, 0.2],
+                "splitLine": {     //网格线
+                    "show": false
+                },
+                axisLine: {
+                    lineStyle: {
+                        color: "#446fbd",
+                        width:1
+                    },
+                   
+                },
+                axisLabel: {
+                    textStyle:{
+                        color:'#7edae8',  //坐标的字体颜色
+                    },
+		        },
+            },
+            
+            {
+                type: 'value',
+                scale: true,
+                name: '线上销额',
+                max: 1200,
+                min: 0,
+                boundaryGap: [0.2, 0.2],
+                splitLine:{
+                        show:false
+                },
+                axisLine: {
+                lineStyle: {
+                    color: "#7edae8",
+                }
+                },
+            }
+        ],
+        series: [
+
+            
+            {   
+                name: '线上销额',
+                type: 'bar',
+                xAxisIndex: 1,
+                yAxisIndex: 1,
+                itemStyle: {
+                normal: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                        offset: 0,
+                        color: '#05f7f9'
+                    }, {
+                        offset: 1,
+                        color: '#0462f9'
+                    }]),
+                }},
+                barWidth :13,
+                data: (function (){
+                    var res = [];
+                    var len = 10;
+                    // while (len--) {
+                    //     res.push(Math.round(Math.random() * 1000));
+                    // }
+                    // for(var i=0;i<len;i++){
+                    //     res.push(this.tg_erp_turnover[i].tg_turnover)
+                    // }
+                    return res;
+                })()
+                
+            },
+            {
+                name: '线下销额',
+                type: 'line',
+                lineStyle : {          // 直线指示器样式设置
+                    color: '#2291e3',
+                    width: 2,
+                    type: 'solid'
+                },
+                smooth: true,
+                smoothMonotone:'x',
+                data: (function (){
+                    var res = [];
+                    var len = 0;
+                    // while (len < 10) {
+                    //     res.push((Math.random()*10 + 5).toFixed(1) - 0);
+                    //     len++;
+                    // }
+                    return res;
+                })()
+            }
+        ]
+    }
+    count = 11;
+    var timer_tg_erp_turnover;
+    tg_erp_turnover({
+        "year": "2020",
+        "page": "1",
+        "size": "999999"
+    }).then((res)=>{
+        var data0 = box_right_1_1_option.series[0].data;
+        var data1 = box_right_1_1_option.series[1].data;
+        var xaxis0 = box_right_1_1_option.xAxis[0].data
+        var xaxis1 = box_right_1_1_option.xAxis[1].data
+        var len = 10
+        for(var i=0;i<len;i++){
+            data0.push(res.data[i].tg_turnover)
+            data1.push(res.data[i].erp_turnover)
+            xaxis0.push(res.data[i].goodsname)
+            // xaxis1.push(res.data[i].)
+        }
+        box_right_1_1.setOption(box_right_1_1_option)
+        timer_tg_erp_turnover = setInterval(function (){
+            // var axisData = (new Date()).toLocaleTimeString().replace(/^\D*/, '');
+            if(keyLight=='3'){
+                len++
+                var data0 = box_right_1_1_option.series[0].data;
+                var data1 = box_right_1_1_option.series[1].data;
+                if(len>res.data.length-1){
+                    len=0
+                }
+                data0.shift();
+                data0.push(res.data[len].tg_turnover);
+                data1.shift();
+                data1.push(res.data[len].erp_turnover);
+
+                box_right_1_1_option.xAxis[0].data.shift();
+                box_right_1_1_option.xAxis[0].data.push(res.data[len].goodsname);
+                box_right_1_1_option.xAxis[1].data.shift();
+                box_right_1_1_option.xAxis[1].data.push(count++);
+                box_right_1_1.setOption(box_right_1_1_option)
+            }
+            
+        
+        }, 3000);
+        $('.box_right_1_1_title_pageup').on('click',function(){
+            len--
+            data0.shift();
+            data0.push(res.data[len].tg_turnover);
+            data1.shift();
+            data1.push(res.data[len].erp_turnover);
+
+            box_right_1_1_option.xAxis[0].data.shift();
+            box_right_1_1_option.xAxis[0].data.push(res.data[len].goodsname);
+            box_right_1_1_option.xAxis[1].data.shift();
+            box_right_1_1_option.xAxis[1].data.push(count++);
+            box_right_1_1.setOption(box_right_1_1_option)
+        })
+        $('.box_right_1_1_title_pagedown').on('click',function(){
+            len++
+            data0.shift();
+            data0.push(res.data[len].tg_turnover);
+            data1.shift();
+            data1.push(res.data[len].erp_turnover);
+
+            box_right_1_1_option.xAxis[0].data.shift();
+            box_right_1_1_option.xAxis[0].data.push(res.data[len].goodsname);
+            box_right_1_1_option.xAxis[1].data.shift();
+            box_right_1_1_option.xAxis[1].data.push(count++);
+            box_right_1_1.setOption(box_right_1_1_option)
+        })
+    })
+//    $('.box_right_1_1_title_pageup').hover(function(){
+//        clearInterval(timer_tg_erp_turnover)
+//    },function(){
+
+//    })
+    
+   
+    
+
+    var box_right_1_3_1 = echarts.init(document.getElementById('box_right_1_3_1'));
+    box_right_1_3_1_option = {
+        tooltip: {//提示框，可以在全局也可以在
+            trigger: 'item',  //提示框的样式
+            formatter: "{a} <br/>{b}: {c} ({d}%)",
+            color:'#fff', //提示框的背景色
+            textStyle:{ //提示的字体样式
+                color:"#fff",
+            }
+        },
+        legend: {  //图例
+            orient: 'vertical',  //图例的布局，竖直    horizontal为水平
+            x: 'right',//图例显示在右边
+            top:50,
+            data:[],
+            textStyle:{    //图例文字的样式
+                color:'#fff',  //文字颜色
+                fontSize:12    //文字大小
+            }
+        },
+        graphic:{
+            type:'text',
+            right:'225',
+            top:'center',
+            style:{
+                text:'销额占比',
+                textAlign:'center',
+                fill:'#a3daec',
+                width:30,
+                height:30
+            }
+        },
+        series: [
+            {
+                name:'销额占比',
+                type:'pie', //环形图的type和饼图相同
+                radius: ['50%', '70%'],//饼图的半径，第一个为内半径，第二个为外半径
+                avoidLabelOverlap: false,
+                right:50,
+                top:20,
+                color:['#407fff','#00cccd','#ee9862','#e15d68','#a682e6'],
+                minAngle:12,
+                label: {
+                    normal: {  //正常的样式
+                        show: true,
+                        position: 'left',
+                        
+                        color: '#fff' 
+                    },
+                    emphasis: { //选中时候的样式
+                        show: true,
+                        textStyle: {
+                            fontSize: '20',
+                            fontWeight: 'bold'
+                        }
+                    }
+                },  //提示文字
+                labelLine: {
+                    length:10,  // 改变标示线的长度
+                    lineStyle: {
+                        color: "#fff"  // 改变标示线的颜色
+                    }
+                },
+                data:[
+                  
+                ]
+            }
+        ]
+    };
+    box_right_1_3_1.setOption(box_right_1_3_1_option);
+
+    var box_right_1_3_2 = echarts.init(document.getElementById('box_right_1_3_2'));
+    box_right_1_3_2_option = {
+        tooltip: {//提示框，可以在全局也可以在
+            trigger: 'item',  //提示框的样式
+            formatter: "{a} <br/>{b}: {c} ({d}%)",
+            color:'#fff', //提示框的背景色
+            textStyle:{ //提示的字体样式
+                color:"#fff",
+            }
+        },
+        legend: {  //图例
+            orient: 'vertical',  //图例的布局，竖直    horizontal为水平
+            x: 'left',//图例显示在右边
+            data:[],
+            textStyle:{    //图例文字的样式
+                color:'#fff',  //文字颜色
+                fontSize:12    //文字大小
+            },
+            top:50,
+        },
+        graphic:{
+            type:'text',
+            left:'225',
+            top:'center',
+            style:{
+                text:'销量占比',
+                textAlign:'center',
+                fill:'#a3daec',
+                width:30,
+                height:30
+            }
+        },
+        series: [
+            {
+                name:'销量占比',
+                type:'pie', //环形图的type和饼图相同
+                radius: ['50%', '70%'],//饼图的半径，第一个为内半径，第二个为外半径
+                avoidLabelOverlap: false,
+                color:['#407fff','#00cccd','#ee9862','#e15d68','#a682e6'],
+                minAngle:12,
+                label: {
+                    normal: {  //正常的样式
+                        show: true,
+                        position: 'left',
+                        color:'#fff',
+                      
+                        lineStyle: {
+                            color: '#fff',
+                            width: 2
+                        },
+                       
+                    },
+                    emphasis: { //选中时候的样式
+                        show: true,
+                        textStyle: {
+                            fontSize: '20',
+                            fontWeight: 'bold'
+                        }
+                    }
+                },  //提示文字
+                left:50,
+                labelLine: {
+                    length:10,  // 改变标示线的长度
+                    lineStyle: {
+                        color: "#fff"  // 改变标示线的颜色
+                    }
+                },
+                data:[
+                    
+                ],
+                
+            }
+        ]
+    };
+    box_right_1_3_2.setOption(box_right_1_3_2_option);
+    get_goods_list({}).then((res)=>{
+        var datalen = []
+        for(var i=0;i<5;i++){
+            datalen.push(res.data[i].goodsid)
+        }
+        total_rate({
+            year:'2020',
+            goodsid_list:datalen,
+            other:'true'
+        }).then((reslx)=>{
+            var dataarrs = []
+            var dataarrse = []
+            console.log(reslx.data)
+            for(var ia=0;ia<reslx.data.length;ia++){
+
+                box_right_1_3_1_option.legend.data.push(reslx.data[ia].goodsname== 'other' ? '其他' : reslx.data[ia].goodsname)
+                box_right_1_3_2_option.legend.data.push(reslx.data[ia].goodsname== 'other' ? '其他' : reslx.data[ia].goodsname)
+                dataarrs.push({
+                    value:reslx.data[ia].total_turnover,
+                    name:reslx.data[ia].goodsname == 'other' ? '其他' : reslx.data[ia].goodsname
+                })
+                dataarrse.push({
+                    value:reslx.data[ia].total_sale_num,
+                    name:reslx.data[ia].goodsname == 'other' ? '其他' : reslx.data[ia].goodsname
+                })
+            }
+            box_right_1_3_1_option.series[0].data = dataarrs
+            box_right_1_3_2_option.series[0].data = dataarrse
+            box_right_1_3_2.setOption(box_right_1_3_2_option);
+            box_right_1_3_1.setOption(box_right_1_3_1_option);
+        })
+    })
+    
+
+    var box_right_2_1 = echarts.init(document.getElementById('box_right_2_1'))
+    var box_right_2_1_option = {
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: [],
+            lineStyle: {
+                color: '#224955',
+                width: 1, //这里是为了突出显示加上的  
+            },
+            axisLabel: {   // X轴线 标签修改
+                textStyle: {
+                    color: '#00fbff', //坐标值得具体的颜色
+                }
+            },
+            splitLine:{
+                show:false,
+                
+            }
+
+        },
+        yAxis: {
+            type: 'value',
+            lineStyle: {
+                color: '#224955',
+                width: 1, //这里是为了突出显示加上的  
+            },
+            axisLabel: {   // X轴线 标签修改
+                textStyle: {
+                    color: '#00fbff', //坐标值得具体的颜色
+                }
+            },
+            
+            lineStyle:{
+                color:['#224955'],
+                width:1,
+                type:'solid'
+            },
+            splitLine:{
+                show:true,
+                lineStyle:{
+                    color:'#19293e'
+                }
+                
+            }
+        },
+        series: [{
+            // name: '模拟数据',
+            data: [],
+            type: 'line',
+            smooth:true,
+            areaStyle:{
+                type : 'default',
+                color : new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                    offset: 0,
+                    color: '#124c5c'
+                }, {
+                    offset: 1,
+                    color: '#142e3e'
+                },{
+                    offset: 1,
+                    color: '#161d2e'
+                }]),
+            },
+            lineStyle:{
+                normal: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ 
+                        offset: 0, 
+                        color: '#6bf7cc' 
+                    }, { 
+                        offset: 1, 
+                        color: '#4bcdef' 
+                    }]),//线条渐变色 
+                    width: 5,
+                    
+                }
+            },
+            itemStyle:{
+                normal:{
+                    color:'#83beec',
+                    label:{
+                        show:true
+                    },
+                    
+                },
+                lineStyle:{
+                    color:'#49c9f1'
+                }
+            }
+        }]
+    }
+    
+    get_goods_list({}).then((res)=>{
+        // productList = response.data
+        $('.box_right_1_1_select').html(res.data[0].goodsname)
+        total_turnover_by_month({
+            'year':'2020',
+            'page':'1',
+            'size':'9999',
+            'goodsid':res.data[0].goodsid
+        }).then((response)=>{
+            console.log(response)
+            for(var i=0;i<response.data.length;i++){
+                box_right_2_1_option.series[0].data.push(response.data[i].total_turnover)
+                box_right_2_1_option.xAxis.data.push(response.data[i].month+'月')
+            }
+            
+            box_right_2_1.setOption(box_right_2_1_option)
+        })
+    })
+    // console.log(productList)
+    $('.box_right_1_1_select').on('click',function(){
+        $('.box_right_1_1_option').show()
+        $('#box_right_2_1').hide()
+    })
+    $('.box_right_1_1_option').on('click','li',function(e){
+        console.log($(e.target).children('a').html())
+        $('.box_right_1_1_option').hide()
+        $('.box_right_1_1_select').html($(e.target).children('a').html())
+        total_turnover_by_month({
+            'year':'2020',
+            'page':'1',
+            'size':'9999',
+            'goodsid':$(e.target).children('span').html()
+        }).then((response)=>{
+            console.log(response)
+            for(var i=0;i<response.data.length;i++){
+                box_right_2_1_option.series[0].data.push(response.data[i].total_turnover)
+                box_right_2_1_option.xAxis.data.push(response.data[i].month+'月')
+            }
+            $('#box_right_2_1').show()
+            box_right_2_1.setOption(box_right_2_1_option)
+            box_right_2_1_option.series[0].data=[]
+            box_right_2_1_option.xAxis.data=[]
+            
+        })
+    })
+    var box_right_1_1_canvas = echarts.init(document.getElementById('box_right_1_1_canvas'))
+    var box_right_1_1_canvas_option = {
+        xAxis: {
+            data: [],
+            axisTick: {
+                show: false
+            },
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    color: '#03c6fc'
+                },
+
+            },
+            axisLabel: {
+                interval: 0,
+                // rotate: 45
+            },
+        },
+        yAxis: {
+            show: false
+        },
+        series: [{
+            name: '销量',
+            type: 'bar',
+            barWidth: '30',
+            data: [],
+            itemStyle: {
+                normal: {
+                    color: '#03c6fc',
+                    label: {
+                        show: true, //开启显示
+                        position: 'top', //在上方显示
+                        textStyle: { //数值样式
+                            color: 'aqua',
+                            fontSize: 15
+                        }
+                    }
+                }
+            }
+        }]
+    }
+    the_average_price({
+        'year':'2020',
+        'page':'1',
+        'size':'9999'
+    }).then((res)=>{
+        console.log(res)
+        for(var i=0;i<8;i++){
+            box_right_1_1_canvas_option.series[0].data.push(res.data[i].the_average_price)
+            box_right_1_1_canvas_option.xAxis.data.push(res.data[i].goodsname)
+        }
+        console.log(box_right_1_1_canvas_option.xAxis.data)
+        box_right_1_1_canvas.setOption(box_right_1_1_canvas_option)
+        var len = 7
+        setInterval(function (){
+            if(keyLight=='3'){
+                len++
+                var data0 = box_right_1_1_canvas_option.series[0].data;
+                var data1 = box_right_1_1_canvas_option.xAxis.data;
+                if(len>res.data.length-1){
+                    len=0
+                }
+                data0.shift();
+                data0.push(res.data[len].the_average_price);
+                data1.shift();
+                data1.push(res.data[len].goodsname);
+                box_right_1_1_canvas.setOption(box_right_1_1_canvas_option)
+            }
+            
+        
+        }, 3000);
+        $('.box_right_1_1_title_pageup1').on('click',function(){
+            len--
+            var data0 = box_right_1_1_canvas_option.series[0].data;
+            var data1 = box_right_1_1_canvas_option.xAxis.data;
+            if(len>res.data.length-1){
+                len=0
+            }
+            data0.shift();
+            data0.push(res.data[len].the_average_price);
+            data1.shift();
+            data1.push(res.data[len].goodsname);
+            box_right_1_1_canvas.setOption(box_right_1_1_canvas_option)
+        })
+        $('.box_right_1_1_title_pagedown1').on('click',function(){
+            len++
+            var data0 = box_right_1_1_canvas_option.series[0].data;
+            var data1 = box_right_1_1_canvas_option.xAxis.data;
+            if(len>res.data.length-1){
+                len=0
+            }
+            data0.shift();
+            data0.push(res.data[len].the_average_price);
+            data1.shift();
+            data1.push(res.data[len].goodsname);
+            box_right_1_1_canvas.setOption(box_right_1_1_canvas_option)
+        })
+    })
+   
+    
+}
+</script>
+
+<script>
+    // mouseleave.passive="leave"
+    let app = new Vue({
+
+        el: '#wrap',
+
+        data: {
+
+            dataline: '',
+
+            qian: [],
+
+            xiaoshou: [],
+
+            sjd1115: '',
+
+            d1120: [],
+
+            c1120: ['#ffffff', '#1578ed', '#01f1e8', '#05c6ff'],
+
+            list:[],
+
+            transdata1:[
+                
+                {
+                "goodsid": "5",
+                "total_turnover": "240.00",
+                "goodsname": "\u897f\u74dc",
+                "before_sequence": "3",
+                "after_sequence": "3"
+                }
+                
+            ],
+
+            the_lowest_price:[],
+            tg_erp_turnover:[],
+            get_goods_list:[]   
+
+        },
+        created() {
+
+            //获取当前时间
+            let date=new Date();
+            //获取当前月的第一天
+            let monthStart = date.setDate(1);
+            //获取当前月
+            let currentMonth=date.getMonth();
+            //获取到下一个月，++currentMonth表示本月+1，一元运算
+            let nextMonth=++currentMonth;
+            //获取到下个月的第一天
+            let nextMonthFirstDay=new Date(date.getFullYear(),nextMonth,1);
+            //一天时间的毫秒数
+            let oneDay=1000*60*60*24;
+
+            //获取当前月第一天和最后一天
+            let firstDay = moment(monthStart).format("YYYY-MM-DD");
+            //nextMonthFirstDay-oneDay表示下个月的第一天减一天时间的毫秒数就是本月的最后一天
+            let lastDay = moment(nextMonthFirstDay-oneDay).format("YYYY-MM-DD");
+
+            var day = date.getDay();
+
+            let weekDay = new Array("星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六");
+
+            let week = weekDay[day]
+
+            setInterval(() => {
+            this.dataline = `${moment().format('YYYY年MM月DD日')}
+                ${moment().format('HH:mm:ss')}${week}`
+
+            }, 1000);
+
+            this.sjd1115 = `${moment().subtract(1, 'y').format('YYYY')}-${moment().subtract(0, 'y').format('YYYY')}年`
+
+        },
+        async mounted() {
+            total_turnover({
+                'year':'2020',
+                'page':'1',
+                'size':'999999'
+            }).then((res)=>{
+                console.log(res)
+                this.transdata1 = res.data
+            })
+            the_lowest_price({
+                "year": "2020",
+                "page": "1",
+                "size": "999999"
+            }).then((res)=>{
+                this.the_lowest_price = res.data
+            })
+            tg_erp_turnover({
+                "year": "2020",
+                "page": "1",
+                "size": "999999"
+            }).then((res)=>{
+                this.tg_erp_turnover = res.data
+            })
+            get_goods_list({
+
+            }).then((res)=>{
+                this.get_goods_list = res.data
+            })
+        },
+        methods:{
+            toggle:function(ele){
+                let s = 0;
+                let e = 12;
+                setInterval(function(){
+                s++
+                e++
+                ele.path[0].style.background = 'linear-gradient(109deg, #04d8ee '+s+'%, #fff, #04d8ee '+e+'%)';
+                if(e >= 100){
+                    s=0
+                    e=12
+                }
+                },50)
+            },
+            back:function(){
+                let element = document.documentElement
+                if(element.requestFullscreen) {
+                    element.requestFullscreen();
+                } else if(element.mozRequestFullScreen) {
+                    element.mozRequestFullScreen();
+                } else if(element.webkitRequestFullscreen) {
+                    element.webkitRequestFullscreen();
+                } else if(element.msRequestFullscreen) {
+                    element.msRequestFullscreen();
+                }
+            },
+            backindex:function(){
+                // let regex=/\&uniacid=(.+?)\&/g;
+                // let uniacid = regex.exec(window.location.href);
+                // if(uniacid[1] == 33 || uniacid[1] == 53){
+                //     window.location.href = "https://dev.huodiesoft.com/web/index.php?c=site&a=entry&m=lexiangpingou&do=data&ac=visualization_data&";
+                // }else{
+                    window.location.href = "https://dev.huodiesoft.com/web/index.php?c=site&a=entry&m=lexiangpingou&do=data&ac=sjgk_data&";
+                // }
+            },
+        },
+        directives:{
+            trigger:{
+                inserted(el,binging){
+                el.click()
+                }
+            }
+        }
+
+    })
+
+</script>
+</body>
+</html>
