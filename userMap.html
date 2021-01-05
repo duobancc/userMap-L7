@@ -99,7 +99,11 @@
 
 		} = L7
 		const {
-			DrillDownLayer
+			DrillDownLayer,
+			CountryLayer,
+			ProvinceLayer,
+			CityLayer,
+			CountyLayer
 		} = District
 
 
@@ -279,13 +283,10 @@
 
 							return el
 						}
-
 						scene.addLayer(chinaPolygonLayer)
 						scene.addLayer(Layer2)
 						scene.addLayer(hightLayer)
 						scene.addControl(legend)
-
-
 					})
 
 
@@ -300,8 +301,6 @@
 
 		const DrillDownMap = () => {
 
-
-
 			const colors = ['#1947d9', '#071a75', '#243dc9'];
 			const scene = new Scene({
 				id: 'map',
@@ -314,49 +313,56 @@
 			});
 
 
+			fetch('https://gw.alipayobjects.com/os/bmw-prod/d6da7ac1-8b4f-4a55-93ea-e81aa08f0cf3.json')
+				.then(res => res.json())
+				.then(geo => {
 
-			scene.on('loaded', () => {
+					const dataObj = {}
+					tempData.forEach(item => {
+						dataObj[item.name] = item
+					})
 
-				new DrillDownLayer(scene, {
-					data: [],
-					viewStart: 'Country',
-					viewEnd: 'City',
-					fill: {
-						color: {
-							field: 'x',
-							values: (x) => {
-								let d = x
-								return d > 125 ?
-									color[7] :
-									d > 120 ?
-										color[6] :
-										d > 115 ?
-											color[5] :
-											d > 110 ?
-												color[4] :
-												d > 105 ?
-													color[3] :
-													d > 100 ?
-														color[2] :
-														d > 95 ?
-															color[1] :
-															color[0];
-							}
-						},
-						activeColor: '#00fbff',
-						scale: 'identity'
-
-					},
-					popup: {
-						enable: true,
-						Html: props => {
-							return `<span>${props.NAME_CHN}</span>`;
+					geo.features = geo.features.map(item => {
+						const name = item.properties.name
+						item.properties = {
+							...item.properties,
+							...dataObj[name]
 						}
-					}
+						return item
+					})
+
+					scene.on('loaded', () => {
+
+						new DrillDownLayer(scene, {
+							provinceData: tempData,
+							joinBy: [ 'NAME_CHN', 'name' ],
+							viewStart: 'Country',
+							viewEnd: 'City',
+							fill: {
+								color: {
+									field: 'memberNum',
+									values: color
+								},
+								activeColor: '#00fbff',
+								scale: 'identity'
+
+							},
+							popup: {
+								enable: true,
+								Html: props => {
+									return `<span>${props.NAME_CHN}</span>`;
+								}
+							}
+						})
+
+
+					})
+
+
+
 				})
 
 
-			})
 
 
 
@@ -371,12 +377,37 @@
 			// scene.addMarker(marker)
 
 		}
-
-
-
 		customDrillDownMap()
+		DrillDownMap()
 
-		// DrillDownMap()
+
+		const custom = () => {
+
+			const scene = new Scene({
+				id: 'map',
+				map: new GaodeMap({
+					center: [120.586579, 27.770092],
+					pitch: 0,
+					style: ''
+				}),
+				logoVisible: false
+			})
+
+			const country = new CountryLayer(Scene,{
+				zIndex: 2,
+				data:[],
+				depth:0,
+				stroke:'red',
+				strokeWIdth: 3,
+				autoFit: false,
+
+
+			})
+
+
+		}
+
+
 	</script>
 </body>
 
