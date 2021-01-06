@@ -13,9 +13,10 @@
 
 		#map {
 			position: absolute;
-			bottom: 0;
+			top: 0;
 			width: 100%;
-			height: 50vh;
+			height: 100%;
+			/* height: 50vh; */
 
 		}
 
@@ -39,69 +40,85 @@
 
 
 	<div id="map"></div>
-	<div id="customMap"></div>
+	<!-- <div id="customMap"></div> -->
 
 	<script src="./modules/l7.js"></script>
 	<script src="./modules/l7-district.js"></script>
-	<script></script>
+	<script src="./modules/axios.min.js"></script>
+
+	<script>
+		console.log('1111')
+
+		const devBaseURL = 'https://dev.lexiangpingou.cn/summary_api.php'
+		const proBaseURL = 'https://www.lexiangpingou.cn/summary_api.php'
+
+
+		const instance = axios.create({
+			baseURL: proBaseURL,
+			timeout: 5000,
+			method: 'post',
+			headers: { 'Content-Type': 'application/json' }
+		})
+
+		instance.interceptors.request.use(config => {
+			console.log('request 拦截 ')
+
+			return config
+		}, err => {
+			console.log('request 拦截  出错')
+
+			return err
+		})
+
+		instance.interceptors.response.use(res => {
+			console.log(' response 拦截')
+			return res.data
+		}, err => {
+			if (err && err.response) {
+				switch (err.response.status) {
+					case 400:
+						console.log("请求错误");
+						break;
+					case 401:
+						console.log("未授权访问");
+						break;
+					default:
+						console.log("其他错误信息");
+				}
+			}
+			return err;
+		})
+
+
+		window.request = instance
+
+
+
+	</script>
+
 	<script>
 
-		// import chinagData from './data/geo.json'
-
-
-		const tempData = [
-			{
-				adcode: 330000,
-				name: "浙江省",
-				memberNum: 18
-			},
-			{
-				adcode: 330000,
-				name: "湖南省",
-				memberNum: 36
-			},
-			{
-				adcode: 330000,
-				name: "青海省",
-				memberNum: 58
-			},
-			{
-				adcode: 330000,
-				name: "山东省",
-				memberNum: 79
+		const getAreaData = async config => {
+			let res = await request({
+				params: {
+				},
+				data: {
+					action: 'area_statistics',
+					...config
+				}
+			})
+			if (res.status === 1002) {
+				return res.data
+			} else {
+				alert('请求数据错误')
+				return false
 			}
-		]
-		
-		let data2 = [
-			{
-			    name: '云南省',
-			    code: 530000,
-			    value: 17881.12
-			  },
-			  {
-			    name: '黑龙江省',
-			    code: 230000,
-			    value: 16361.62
-			  },
-			  {
-			    name: '贵州省',
-			    code: 520000,
-			    value: 14806.45
-			  },
-			  {
-			    name: '北京市',
-			    code: 110000,
-			    value: 30319.98
-			  },
-			  {
-			    name: '河北省',
-			    code: 130000,
-			    value: 36010.27
-			  },
-		]
+
+		}
 
 
-		// console.log( chinagData )
+
+
 
 
 		const color = [
@@ -127,21 +144,13 @@
 
 		} = L7
 		const {
-			DrillDownLayer,
-			CountryLayer,
-			ProvinceLayer,
-			CityLayer,
-			CountyLayer
+			DrillDownLayer
 		} = District
 
 
 		const customDrillDownMap = () => {
 
 			console.log('L7version: ' + L7.version)
-
-
-			// let  colors2 = ['#1a61b7', '#0e98c3', '#06d3cd' ]
-			// const colors = ['#171b2a'];
 
 			const color = [
 				"rgb(255,255,217)",
@@ -320,22 +329,22 @@
 
 				})
 
-
-
 		}
 
 
 
 
-		const DrillDownMap = () => {
+		const DrillDownMap = async () => {
 
+			let provinceData = await getAreaData({ type: 1, code: '' })
 			const colors = ['#1947d9', '#071a75', '#243dc9'];
 			const scene = new Scene({
 				id: 'map',
 				map: new GaodeMap({
 					center: [120.58657982223511, 27.770092808917987],
 					pitch: 0,
-					style: ''
+					style: 'dark',
+					zoom: 4.3,
 				}),
 				logoVisible: false
 			});
@@ -343,37 +352,113 @@
 
 
 
-					scene.on('loaded', () => {
+			scene.on('loaded', () => {
 
-						new DrillDownLayer(scene, {
-							data: data2,
-							joinBy: [ 'NAME_CHN', 'name' ],
-							province: {
-							  depth: 1,
-							  provinceStroke: 'red',
-							  cityStroke: '#EBCCB4',
-							  cityStrokeWidth: 1,
-							  autoFit: false,
-							  data: data2,
-							},
-							viewStart: 'Country',
-							viewEnd: 'City',
-							fill: {
-								color: {
-									field: 'value',
-									values: color
-								},
-								activeColor: '#00fbff',
-							},
-							popup: {
-								enable: true,
-								Html: props => {
-									return `<span>${props.NAME_CHN}, ${props.value}</span>`;
-								}
+
+				const drillLayer = new DrillDownLayer(scene, {
+					customTrigger: false,
+					data: [],
+					joinBy: ['NAME_CHN', 'name'],
+					depth: 0,
+					province: {
+						chinaNationalStroke: '#00fbff', // 国界线
+						chinaNationalWidth: 1,
+						coastlineStroke: '#00fbff', //海岸线
+						coastlineWidth: 1,
+						nationalStroke: '#ff762e',
+						depth: 1,
+						provinceStroke: '#10405a', // 省界线
+						autoFit: false,
+						data: provinceData
+					},
+					city: {
+						cityStroke: '#10405a',
+						cityStrokeWidth: 1,
+						autoFit: true,
+						// fill: {
+						// 	color: {
+						// 		file: 'member'
+						// 	}
+						// }
+
+					},
+					country: {
+						cityStroke: '#10405a',
+						cityStrokeWidth: 1,
+						autoFit: true,
+					},
+					viewStart: 'Country',
+					viewEnd: 'City',
+					fill: {
+						color: {
+							field: 'memberNum',
+							values: (memberNum) => {
+								let d = memberNum
+								return d > 100 ?
+									color[7] :
+									d > 60 ?
+										color[6] :
+										d > 40 ?
+											color[5] :
+											d > 25 ?
+												color[4] :
+												d > 15 ?
+													color[3] :
+													d > 10 ?
+														color[2] :
+														d > 5 ?
+															color[1] :
+															d > 0 ?
+																color[0] :
+																'white';
 							}
-						})
+						},
+						activeColor: '#00fbff'
+					},
+					label: {
+						size: 16,
+					},
+					popup: {
+						enable: true,
+						Html: props => {
+							return `<span>${props.NAME_CHN}, ${props.memberNum ? props.memberNum : 0}</span>`;
+						}
+					}
+				})
+
+
+
+				drillLayer.provinceLayer.on('click', async (e) => {
+
+					let areacode = e.feature.properties.areacode
+
+					let cityData = await getAreaData({
+						type: 2,
+						code: areacode
+					})
+					console.log(areacode)
+					drillLayer.drillDown([areacode], cityData)
 
 				})
+
+
+				drillLayer.cityLayer.on('click', async (e) => {
+
+					let areacode = e.feature.properties.areacode
+
+					let countryData = await getAreaData({
+						type: 3,
+						code: areacode
+					})
+
+					console.log(areacode)
+					drillLayer.drillDown([areacode], countryData)
+
+				})
+
+
+
+			})
 
 
 
@@ -390,36 +475,8 @@
 			// scene.addMarker(marker)
 
 		}
-		customDrillDownMap()
+		// customDrillDownMap()
 		DrillDownMap()
-
-
-		const custom = () => {
-
-			const scene = new Scene({
-				id: 'map',
-				map: new GaodeMap({
-					center: [120.586579, 27.770092],
-					pitch: 0,
-					style: ''
-				}),
-				logoVisible: false
-			})
-
-			const country = new CountryLayer(Scene,{
-				zIndex: 2,
-				data:[],
-				depth:0,
-				stroke:'red',
-				strokeWIdth: 3,
-				autoFit: false,
-
-
-			})
-
-
-		}
-
 
 	</script>
 </body>
