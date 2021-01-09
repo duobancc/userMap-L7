@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>创建地图场景</title>
+	<title>火蝶云用户分布图</title>
 	<style>
 		html,
 		body {
@@ -11,13 +11,96 @@
 			margin: 0;
 		}
 
-		#map {
+		* {
+			padding: 0;
+			margin: 0;
+		}
+		.flex-row{
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.popup-html {
+			background-color: antiquewhite;
+			opacity: .5;
+			padding: 20px 20px;
+		}
+
+		.popup-html>p {
+			font-size: 18px;
+			color: #474747;
+		}
+
+		.background-image {
 			position: absolute;
 			top: 0;
-			width: 100%;
-			height: 100%;
-			/* height: 50vh; */
+			left: 0;
+			background: url(./img/big-bg.png) no-repeat;
+			background-position: center;
+			background-size: 100% 100%;
+			width: 100vw;
+			min-width: 1866px;
+			height: 100vh;
+			min-height: 1080px;
+			/* text-align: center; */
+		}
 
+		.main {
+			position: absolute;
+			top: 0;
+			left: calc((100% - 1866px) / 2);
+			box-sizing: border-box;
+			width: 1866px;
+			height: 1080px;
+			overflow: hidden;
+		}
+		.app{
+			margin-top: 20px;
+		}
+		.app-main{
+			justify-content: space-between;
+		}
+
+		.timer-date {
+			/* height: 120px; */
+			color: #00fbff;
+			/* margin-top: 24px; */
+			white-space: pre-line;
+		}
+
+		.menu {
+
+		}
+		.btn{
+			width: 112px;
+			height: 46px;
+			font-size: 18px;
+			font-weight: bold;
+			color: #474747;
+			background-color: #00fbff;
+			border: none;
+			outline:none;
+		}
+		.btn:active{
+			border: tomato 2px solid;
+		}
+		.fullScreen{
+
+		}
+		.back{
+			border: solid 2px #00fbff;
+			background-color: #161a2a;
+			color: white;
+			margin-left: 16px;
+		}
+
+		#map {
+			position: absolute;
+			z-index: 0;
+			width: 50%;
+			height: 89.5%;
+			top: 9.5%;
 		}
 
 		#customMap {
@@ -38,26 +121,41 @@
 
 <body>
 
+	<dvi class="background-image">
+		<main class="main">
+			<div class="app" id="app">
 
-	<div id="map"></div>
-	<!-- <div id="customMap"></div> -->
+			</div>
+
+			<div id="map"></div>
+		</main>
+	</dvi>
+
+	<!-- 加载 React。-->
+	<!-- 注意: 部署时，将 "development.js" 替换为 "production.min.js"。-->
+	<script src="./modules/react.development.js" crossorigin></script>
+	<script src="./modules/react-dom.development.js" crossorigin></script>
+	<!-- 可以在Script 中使用jsx -->
+	<script src="./modules/babel.min.js"></script>
+
+	<!-- 加载我们的 React 组件。-->
+	<script src="./js/timer.js"></script>
 
 	<script src="./modules/l7.js"></script>
 	<script src="./modules/l7-district.js"></script>
 	<script src="./modules/axios.min.js"></script>
+	<script src="./modules/moment-with-locales.js"></script>
 
 	<script>
-		console.log('1111')
-
 		const devBaseURL = 'https://dev.lexiangpingou.cn/summary_api.php'
 		const proBaseURL = 'https://www.lexiangpingou.cn/summary_api.php'
-
-
 		const instance = axios.create({
 			baseURL: proBaseURL,
 			timeout: 5000,
 			method: 'post',
-			headers: { 'Content-Type': 'application/json' }
+			headers: {
+				'Content-Type': 'application/json'
+			}
 		})
 
 		instance.interceptors.request.use(config => {
@@ -91,17 +189,67 @@
 
 
 		window.request = instance
+	</script>
 
 
+	<script type="text/babel">
+
+
+		class TimerDate extends React.Component {
+
+			constructor() {
+				super()
+				this.state = {
+					date: ''
+				}
+			}
+
+			render() {
+				return (
+					<div className="flex-row app-main" >
+						<div className="timer-date">
+							{this.state.date}
+						</div>
+						<div className="menu flex-row">
+							<button className="fullScreen btn">
+								全屏
+							</button>
+							<button className="back btn">
+								返回
+							</button>
+						</div>
+					</div>
+
+				)
+			}
+
+			componentDidMount() {
+
+				this.timer = setInterval(() => {
+					const date = `${moment().format('YYYY年MM月DD日')}
+          ${moment().format('HH:mm:ss dddd')}`
+					this.setState({
+						date,
+					})
+
+				}, 1000)
+			}
+
+			componentUnMount() {
+				clearInterval(this.timer)
+			}
+
+		}
+
+		ReactDOM.render(<TimerDate />, document.getElementById('app'))
 
 	</script>
 
-	<script>
 
+	<script>
 		const getAreaData = async config => {
 			let res = await request({
-				params: {
-				},
+				params: {},
 				data: {
 					action: 'area_statistics',
 					...config
@@ -113,13 +261,7 @@
 				alert('请求数据错误')
 				return false
 			}
-
 		}
-
-
-
-
-
 
 		const color = [
 			"rgb(255,255,217)",
@@ -166,7 +308,7 @@
 			const MyMap = new GaodeMap({
 				center: [120.58657982223511, 27.770092808917987],
 				pitch: 0,
-				style: 'dark',
+				style: 'blank',
 				rotation: 0,
 				zoom: 6
 			})
@@ -279,12 +421,14 @@
 								closeButton: false
 							})
 								.setLnglat(e.lngLat)
-								.setHTML(`<div>地区: ${e.feature.properties.name}
+								.setHTML(
+									`<div>地区: ${e.feature.properties.name}
 									</div>
 									<div>
 										数量：${e.feature.properties.memberNum ? e.feature.properties.memberNum : 0}
 										</div>
-									`)
+									`
+								)
 
 							scene.addPopup(popup)
 						})
@@ -309,14 +453,14 @@
 							let el = document.createElement('div')
 							el.className = "infolegend legend"
 							let grades = [0, 10, 20, 50, 100, 200, 500];
-							for (let i = 0; i < grades.length; i++) {
-								el.innerHTML +=
-									'<i style="background:' +
-									color2[i] +
-									'"></i> ' +
-									grades[i] +
-									(grades[i + 1] ? "–" + grades[i + 1] + "<br>" : "+");
-							}
+							// for (let i = 0; i < grades.length; i++) {
+							// 	el.innerHTML +=
+							// 		'<i style="background:' +
+							// 		color2[i] +
+							// 		'"></i> ' +
+							// 		grades[i] +
+							// 		(grades[i + 1] ? "–" + grades[i + 1] + "<br>" : "+");
+							// }
 
 							return el
 						}
@@ -336,18 +480,33 @@
 
 		const DrillDownMap = async () => {
 
-			let provinceData = await getAreaData({ type: 1, code: '' })
+			let provinceData = await getAreaData({
+				type: 1,
+				code: ''
+			})
 			const colors = ['#1947d9', '#071a75', '#243dc9'];
 			const scene = new Scene({
 				id: 'map',
 				map: new GaodeMap({
 					center: [120.58657982223511, 27.770092808917987],
 					pitch: 0,
-					style: 'dark',
-					zoom: 4.3,
+					style: 'blank',
+					zoom: 4,
 				}),
 				logoVisible: false
 			});
+
+
+			// const popup = new Popup({
+			// 	offsets: [0, 20],
+			// 	color: '#ff762e'
+			// }).setText('火蝶信息科技');
+			// const marker = new Marker()
+			// 	.setLnglat([120.58657982223511, 27.770092808917987])
+			// 	.setPopup(popup)
+
+
+			// scene.addMarker(marker)
 
 
 
@@ -361,14 +520,14 @@
 					joinBy: ['NAME_CHN', 'name'],
 					depth: 0,
 					province: {
-						chinaNationalStroke: '#00fbff', // 国界线
-						chinaNationalWidth: 1,
-						coastlineStroke: '#00fbff', //海岸线
-						coastlineWidth: 1,
-						nationalStroke: '#ff762e',
+						// chinaNationalStroke: '#474747', // 国界线
+						// chinaNationalWidth: 2,
+						// coastlineStroke: '#ff762e', //海岸线
+						// coastlineWidth: 1,
+						// nationalStroke: '#ff762e',
 						depth: 1,
 						provinceStroke: '#10405a', // 省界线
-						autoFit: false,
+						autoFit: true,
 						data: provinceData
 					},
 					city: {
@@ -421,12 +580,39 @@
 					popup: {
 						enable: true,
 						Html: props => {
-							return `<span>${props.NAME_CHN}, ${props.memberNum ? props.memberNum : 0}</span>`;
-						}
+							return `
+								<div class="popup-html">
+									<p>${props.NAME_CHN} </p>
+									<p>${props.memberNum ? props.memberNum : 0} 家</p>
+								</div>
+								`
+						},
+						// maxWidth: 40,
+
 					}
 				})
 
+				// const popup = new Popup({
+				// 	offsets: [0, 0],
+				// 	closeButton: false
+				// })
 
+
+				// drillLayer.provinceLayer.on('mousemove', (e) => {
+				// 	// console.log(e.feature.properties)
+				// 	let i = e.feature.properties
+				// 	const popupHTML = `
+				// 			<p>省份
+				// 				${i.NAME_CHN} </p>
+				// 				<p>地区
+				// 			  ${i.memberNum ? i.memberNum : 0}</p><p>数值
+				// 			  ${i.x}</p>
+				// 		`
+				// 	popup.setLnglat([i.x, i.y])
+				// 	popup.setHTML(popupHTML)
+				// })
+
+				// scene.addPopup(popup)
 
 				drillLayer.provinceLayer.on('click', async (e) => {
 
@@ -464,20 +650,9 @@
 
 
 
-			// const popup = new Popup({
-			// 	offsets: [0, 20]
-			// }).setText('火蝶信息科技');
-
-			// const marker = new Marker()
-			// 	.setLnglat([120.58657982223511, 27.770092808917987])
-			// 	.setPopup(popup)
-
-			// scene.addMarker(marker)
-
 		}
 		// customDrillDownMap()
 		DrillDownMap()
-
 	</script>
 </body>
 

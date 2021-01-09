@@ -4,6 +4,20 @@
 	user-select: none;
 }
 
+.userMap{
+	position: absolute;
+	top: 200px;
+	left: 500px;
+	
+	font-size: 24px;
+	color: #04d8ee;
+}
+.userMap>a{
+	color: #04d8ee;
+	text-decoration: none;
+}
+
+
 
 .infolegend {
     padding: 6px 8px;
@@ -68,6 +82,7 @@ img {
 }
 
 #map {
+	display: none;
 	position: absolute;
 	z-index: 0;
 	width: 830px;

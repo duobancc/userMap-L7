@@ -238,7 +238,9 @@
 				</div>
 
 
-
+				<div class="userMap">
+					<a href="./userMap.html">用户分布地图</a>
+				</div>
 
 
 				<div class="zxdd ab">
@@ -2291,15 +2293,22 @@
 
 				scene.on('loaded', () => {
 
-				const drillLayer =	new DrillDownLayer(scene, {
+					const drillLayer = new DrillDownLayer(scene, {
 						data: [
-							
+
 						],
-						provinceData: [
-							{ member: 36},
-							{ member: 36},
-							{ member: 36},
-							{ member: 36},
+						provinceData: [{
+								member: 36
+							},
+							{
+								member: 36
+							},
+							{
+								member: 36
+							},
+							{
+								member: 36
+							},
 						],
 						viewStart: 'Country',
 						viewEnd: 'City',
@@ -2336,15 +2345,13 @@
 							}
 						}
 					});
-					
-					drillLayer.drillDown(
-					{
+
+					drillLayer.drillDown({
 						adcode: '110100',
 						data: [
-							
+
 						]
-					}
-					)
+					})
 
 
 				})
