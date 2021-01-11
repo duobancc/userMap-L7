@@ -4,119 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>火蝶云用户分布图</title>
-	<style>
-		html,
-		body {
-			overflow: hidden;
-			margin: 0;
-		}
-
-		* {
-			padding: 0;
-			margin: 0;
-		}
-		.flex-row{
-			display: flex;
-			align-items: center;
-			justify-content: center;
-		}
-
-		.popup-html {
-			background-color: antiquewhite;
-			opacity: .5;
-			padding: 20px 20px;
-		}
-
-		.popup-html>p {
-			font-size: 18px;
-			color: #474747;
-		}
-
-		.background-image {
-			position: absolute;
-			top: 0;
-			left: 0;
-			background: url(./img/big-bg.png) no-repeat;
-			background-position: center;
-			background-size: 100% 100%;
-			width: 100vw;
-			min-width: 1866px;
-			height: 100vh;
-			min-height: 1080px;
-			/* text-align: center; */
-		}
-
-		.main {
-			position: absolute;
-			top: 0;
-			left: calc((100% - 1866px) / 2);
-			box-sizing: border-box;
-			width: 1866px;
-			height: 1080px;
-			overflow: hidden;
-		}
-		.app{
-			margin-top: 20px;
-		}
-		.app-main{
-			justify-content: space-between;
-		}
-
-		.timer-date {
-			/* height: 120px; */
-			color: #00fbff;
-			/* margin-top: 24px; */
-			white-space: pre-line;
-		}
-
-		.menu {
-
-		}
-		.btn{
-			width: 112px;
-			height: 46px;
-			font-size: 18px;
-			font-weight: bold;
-			color: #474747;
-			background-color: #00fbff;
-			border: none;
-			outline:none;
-		}
-		.btn:active{
-			border: tomato 2px solid;
-		}
-		.fullScreen{
-
-		}
-		.back{
-			border: solid 2px #00fbff;
-			background-color: #161a2a;
-			color: white;
-			margin-left: 16px;
-		}
-
-		#map {
-			position: absolute;
-			z-index: 0;
-			width: 50%;
-			height: 89.5%;
-			top: 9.5%;
-		}
-
-		#customMap {
-			position: absolute;
-			width: 100%;
-			height: 50vh;
-		}
-
-		.l7-popup-content {
-			/* background-color: transparent !important; */
-		}
-
-		.l7-popup-tip {
-			/* background-color: transparent !important; */
-		}
-	</style>
+	<link rel="stylesheet" href="./style/user-map.css">
 </head>
 
 <body>
@@ -194,55 +82,116 @@
 
 	<script type="text/babel">
 
+		console.log(React)
 
-		class TimerDate extends React.Component {
+		const { useState, useRef, useEffect } = React
 
-			constructor() {
-				super()
-				this.state = {
-					date: ''
+
+		const Title = () => {
+			let timer
+			const textGradient = useRef()
+
+			useEffect(() => {
+				let s = 0;
+				let e = 12;
+				timer = setInterval(function () {
+					s++
+					e++
+					textGradient.current.style.background = 'linear-gradient(109deg, #04d8ee ' + s + '%, #fff, #04d8ee ' + e + '%)';
+					if (e >= 100) {
+						s = 0
+						e = 12
+					}
+				}, 50)
+				return () => {
+					clearInterval(timer)
 				}
-			}
+			}, [])
 
-			render() {
-				return (
-					<div className="flex-row app-main" >
-						<div className="timer-date">
-							{this.state.date}
-						</div>
-						<div className="menu flex-row">
-							<button className="fullScreen btn">
-								全屏
-							</button>
-							<button className="back btn">
-								返回
-							</button>
-						</div>
-					</div>
+			console.log('Title 渲染=======')
 
-				)
-			}
+			return (
+				<p className="user-title" ref={textGradient}>火蝶云用户分布中心
+				</p>
+			)
+		}
 
-			componentDidMount() {
-
-				this.timer = setInterval(() => {
+		const Timer = props => {
+			let timer = null
+			const [date, setDate] = useState('')
+			useEffect(() => {
+				timer = setInterval(() => {
 					const date = `${moment().format('YYYY年MM月DD日')}
           ${moment().format('HH:mm:ss dddd')}`
-					this.setState({
-						date,
-					})
-
+					setDate(date)
 				}, 1000)
+				return () => {
+					clearInterval(this.timer)
+				}
+			}, [])
+			return (
+				<div className="timer-date">
+					{date}
+				</div>
+			)
+
+		}
+
+		const TimerDate = () => {
+
+			const [title, setTitle] = useState('全屏')
+
+			console.log(' timerDate 渲染')
+			return (
+				<div className="flex-row app-main" >
+
+					<Timer />
+
+					<Title />
+
+					<div className="menu flex-row">
+						<button className="fullScreen btn" onClick={fullScreen}>
+							{ title }
+						</button>
+						<button className="back btn" onClick={back}>
+							返回
+						</button>
+					</div>
+				</div>
+			)
+
+			function fullScreen() {
+
+				if (!document.fullscreenElement) {
+					setTitle('退出全屏')
+					document.documentElement.requestFullscreen();
+				} else {
+					if (document.exitFullscreen) {
+						setTitle('全屏')
+						document.exitFullscreen();
+					}
+				}
+
+
+				// let element = document.documentElement
+				// if (element.requestFullscreen) {
+				// 	element.requestFullscreen();
+				// } else if (element.mozRequestFullScreen) {
+				// 	element.mozRequestFullScreen();
+				// } else if (element.webkitRequestFullscreen) {
+				// 	element.webkitRequestFullscreen();
+				// } else if (element.msRequestFullscreen) {
+				// 	element.msRequestFullscreen();
+				// }
 			}
 
-			componentUnMount() {
-				clearInterval(this.timer)
+			function back() {
+
 			}
 
 		}
 
 		ReactDOM.render(<TimerDate />, document.getElementById('app'))
-
 	</script>
 
 
