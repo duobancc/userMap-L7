@@ -112,7 +112,7 @@ html, body {
 #map {
 	position: absolute;
 	z-index: 0;
-	width: 50%;
+	width: 60%;
 	height: 89.5%;
 	top: 9.5%;
 }
@@ -129,4 +129,32 @@ html, body {
 
 .l7-popup-tip {
 	/* background-color: transparent !important; */
+}
+
+.moveback{
+	display: none;
+	position: absolute;
+	left: 0;
+	top: calc((1080px - 112px) / 2 );
+	height: 42px;
+	width: 100%;
+	border: #00fbff solid 1px;
+	justify-content: space-between;
+	color: aliceblue;
+	pointer-events: none;
+}
+.go-forward{
+	background-color: antiquewhite;
+}
+.goback{
+	background-color: antiquewhite;
+}
+.last-page{
+	position: absolute;
+	right: 0;
+	height: calc( 1080px - 76px ) ;
+	line-height: 1004px;
+	border: #00fbff solid 1px;
+	opacity: 0;
+	
 }

@@ -79,6 +79,14 @@
 		window.request = instance
 	</script>
 
+	<script>
+
+		// document.addEventListener('mousemove', (e) => {
+		// 	console.log(e)
+		// }, true)
+
+	</script>
+
 
 	<script type="text/babel">
 
@@ -129,34 +137,71 @@
 					clearInterval(this.timer)
 				}
 			}, [])
+
+
+
+
 			return (
 				<div className="timer-date">
 					{date}
 				</div>
 			)
-
 		}
 
 		const TimerDate = () => {
-
 			const [title, setTitle] = useState('全屏')
-
+			const goForward = useRef()
+			const goback = useRef()
+			let goForwardEvent
+			let gobackEvent
 			console.log(' timerDate 渲染')
+
+			useEffect(() => {
+
+				// goForward.current.addEventListener('mousemove ', (e) => {
+				// 	console.log( e)
+				// }, true)
+
+				goback.current.addEventListener('mouseout', (e) => {
+
+					console.log('鼠标移入', goback.current )
+
+				}, true)
+
+				goback.current.addEventListener('mouseleave', (e) => {
+
+					console.log('鼠标移出',  goback.current.style )
+
+				}, true)
+
+
+
+
+				return () => {
+					// goForward.current.removeEventListener()
+				}
+			}, [])
+
 			return (
-				<div className="flex-row app-main" >
-
-					<Timer />
-
-					<Title />
-
-					<div className="menu flex-row">
-						<button className="fullScreen btn" onClick={fullScreen}>
-							{ title }
+				<div>
+					<div className="flex-row app-main" >
+						<Timer />
+						<Title />
+						<div className="menu flex-row">
+							<button className="fullScreen btn" onClick={fullScreen}>
+								{title}
+							</button>
+							<button className="back btn" onClick={() => { }}>
+								返回
 						</button>
-						<button className="back btn" onClick={back}>
-							返回
-						</button>
+						</div>
 					</div>
+
+					<div ref={goback} style={{ opacity: opacity }} className="last-page">
+						<svg t="1610422255016" className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2242" width="64" height="64"><path d="M769.11 512l-448 448-60.417-60.33 448-448L769.11 512z m-60.843 60.757l-453.291-453.376 60.33-60.33 453.377 453.376-60.416 60.33z" p-id="2243" fill="#00fbff"></path></svg>
+					</div>
+
+				
 				</div>
 			)
 
@@ -172,7 +217,6 @@
 					}
 				}
 
-
 				// let element = document.documentElement
 				// if (element.requestFullscreen) {
 				// 	element.requestFullscreen();
@@ -183,10 +227,6 @@
 				// } else if (element.msRequestFullscreen) {
 				// 	element.msRequestFullscreen();
 				// }
-			}
-
-			function back() {
-
 			}
 
 		}
@@ -207,7 +247,6 @@
 			if (res.status === 1002) {
 				return res.data
 			} else {
-				alert('请求数据错误')
 				return false
 			}
 		}
@@ -378,15 +417,12 @@
 										</div>
 									`
 								)
-
 							scene.addPopup(popup)
 						})
 
 						const legend = new Control({
 							position: 'bottomright'
-
 						})
-
 						legend.onAdd = () => {
 							// let color =  ['#1947d9', '#243dc9' ,'#071a75', '#00fbff' ];
 							const color2 = [
@@ -418,17 +454,10 @@
 						scene.addLayer(hightLayer)
 						scene.addControl(legend)
 					})
-
-
 				})
-
 		}
 
-
-
-
 		const DrillDownMap = async () => {
-
 			let provinceData = await getAreaData({
 				type: 1,
 				code: ''
@@ -437,10 +466,12 @@
 			const scene = new Scene({
 				id: 'map',
 				map: new GaodeMap({
-					center: [120.58657982223511, 27.770092808917987],
+					center: [105.58657982223511, 32.770092808917987],
 					pitch: 0,
 					style: 'blank',
-					zoom: 4,
+					zoom: 4.5,
+					dragEnable: false,
+					zoomEnable: true
 				}),
 				logoVisible: false
 			});
@@ -476,7 +507,7 @@
 						// nationalStroke: '#ff762e',
 						depth: 1,
 						provinceStroke: '#10405a', // 省界线
-						autoFit: true,
+						autoFit: false,
 						data: provinceData
 					},
 					city: {
@@ -564,15 +595,17 @@
 				// scene.addPopup(popup)
 
 				drillLayer.provinceLayer.on('click', async (e) => {
-
 					let areacode = e.feature.properties.areacode
-
 					let cityData = await getAreaData({
 						type: 2,
 						code: areacode
 					})
-					console.log(areacode)
-					drillLayer.drillDown([areacode], cityData)
+
+					if (cityData) {
+						drillLayer.drillDown([areacode], cityData)
+					} else {
+						alert('该地区无数据')
+					}
 
 				})
 
@@ -586,8 +619,11 @@
 						code: areacode
 					})
 
-					console.log(areacode)
-					drillLayer.drillDown([areacode], countryData)
+					if (countryData) {
+						drillLayer.drillDown([areacode], countryData)
+					} else {
+						alert('该地区无数据')
+					}
 
 				})
 
