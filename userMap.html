@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-CN">
 
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>火蝶云用户分布图</title>
 	<link rel="stylesheet" href="./style/user-map.css">
 </head>
@@ -12,11 +14,37 @@
 	<dvi class="background-image">
 		<main class="main">
 			<div class="app" id="app">
-
 			</div>
-
 			<div id="map"></div>
 		</main>
+
+		<!-- 地图四角 -->
+		<div class="rahmen-top-left rahmen">
+		</div>
+		<div class="rahmen-top-right rahmen">
+		</div>
+		<div class="rahmen-bottom-left rahmen">
+		</div>
+		<div class="rahmen-bottom-right rahmen">
+		</div>
+		<!-- 图例 -->
+		<div class="map-lengen flex-row">
+			<div class="lengen-text flex-column">
+				<span>高</span>
+				<span>低</span>
+			</div>
+			<ul>
+				<li style="background: #071A75;"></li>
+				<li style="background: #0929A5;"></li>
+				<li style="background: #1947D9;"></li>
+				<li style="background: #243DC9;"></li>
+			</ul>
+		</div>
+
+		<div class="service-businesses-num">
+			
+		</div>
+
 	</dvi>
 
 	<!-- 加载 React。-->
@@ -25,9 +53,6 @@
 	<script src="./modules/react-dom.development.js" crossorigin></script>
 	<!-- 可以在Script 中使用jsx -->
 	<script src="./modules/babel.min.js"></script>
-
-	<!-- 加载我们的 React 组件。-->
-	<script src="./js/timer.js"></script>
 
 	<script src="./modules/l7.js"></script>
 	<script src="./modules/l7-district.js"></script>
@@ -79,21 +104,11 @@
 		window.request = instance
 	</script>
 
-	<script>
-
-		// document.addEventListener('mousemove', (e) => {
-		// 	console.log(e)
-		// }, true)
-
-	</script>
-
-
 	<script type="text/babel">
 
 		console.log(React)
 
 		const { useState, useRef, useEffect } = React
-
 
 		const Title = () => {
 			let timer
@@ -149,38 +164,28 @@
 		}
 
 		const TimerDate = () => {
-			const [title, setTitle] = useState('全屏')
-			const goForward = useRef()
-			const goback = useRef()
-			let goForwardEvent
-			let gobackEvent
-			console.log(' timerDate 渲染')
+			const [title, setTitle] = useState(false)
+
+			let linsenKey
+
 
 			useEffect(() => {
 
-				// goForward.current.addEventListener('mousemove ', (e) => {
-				// 	console.log( e)
-				// }, true)
-
-				goback.current.addEventListener('mouseout', (e) => {
-
-					console.log('鼠标移入', goback.current )
-
-				}, true)
-
-				goback.current.addEventListener('mouseleave', (e) => {
-
-					console.log('鼠标移出',  goback.current.style )
-
-				}, true)
-
-
-
+				document.addEventListener('keydown', function (e) {
+					if (e && e.keyCode === 122) {
+					
+					} else if (e && e.keyCode === 27) {
+					
+					}
+				})
 
 				return () => {
-					// goForward.current.removeEventListener()
+
 				}
 			}, [])
+
+
+
 
 			return (
 				<div>
@@ -189,30 +194,24 @@
 						<Title />
 						<div className="menu flex-row">
 							<button className="fullScreen btn" onClick={fullScreen}>
-								{title}
+								{title ? '退出全屏' : '全屏'}
 							</button>
-							<button className="back btn" onClick={() => { }}>
-								返回
-						</button>
+							<button className="back btn" onClick={() => { location.href = location.href.replace('userMap.html', 'index.html') }}>
+								首页
+							</button>
 						</div>
 					</div>
-
-					<div ref={goback} style={{ opacity: opacity }} className="last-page">
-						<svg t="1610422255016" className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2242" width="64" height="64"><path d="M769.11 512l-448 448-60.417-60.33 448-448L769.11 512z m-60.843 60.757l-453.291-453.376 60.33-60.33 453.377 453.376-60.416 60.33z" p-id="2243" fill="#00fbff"></path></svg>
-					</div>
-
-				
 				</div>
 			)
 
 			function fullScreen() {
 
 				if (!document.fullscreenElement) {
-					setTitle('退出全屏')
+					setTitle(true)
 					document.documentElement.requestFullscreen();
 				} else {
 					if (document.exitFullscreen) {
-						setTitle('全屏')
+						setTitle(false)
 						document.exitFullscreen();
 					}
 				}
@@ -228,12 +227,10 @@
 				// 	element.msRequestFullscreen();
 				// }
 			}
-
 		}
 
 		ReactDOM.render(<TimerDate />, document.getElementById('app'))
 	</script>
-
 
 	<script>
 		const getAreaData = async config => {
@@ -252,16 +249,14 @@
 		}
 
 		const color = [
-			"rgb(255,255,217)",
-			"rgb(237,248,177)",
-			"rgb(199,233,180)",
-			"rgb(127,205,187)",
-			"rgb(65,182,196)",
-			"rgb(29,145,192)",
-			"rgb(34,94,168)",
-			"rgb(12,44,132)"
+			"#071A75",
+			"#0929A5",
+			"#1947D9",
+			"#243DC9",
 		];
-
+		color.reverse()
+		// #222a41
+		// #161c2c
 		const {
 			Scene,
 			GaodeMap,
@@ -271,38 +266,29 @@
 			LineLayer,
 			PolygonLayer,
 			Control
-
 		} = L7
 		const {
 			DrillDownLayer
 		} = District
+		const customDrillDownMap = async () => {
 
+			let provinceData = await getAreaData({
+				type: 1,
+				code: ''
+			})
 
-		const customDrillDownMap = () => {
-
-			console.log('L7version: ' + L7.version)
-
-			const color = [
-				"rgb(255,255,217)",
-				"rgb(237,248,177)",
-				"rgb(199,233,180)",
-				"rgb(127,205,187)",
-				"rgb(65,182,196)",
-				"rgb(29,145,192)",
-				"rgb(34,94,168)",
-				"rgb(12,44,132)"
-			];
 
 			const MyMap = new GaodeMap({
-				center: [120.58657982223511, 27.770092808917987],
+				center: [105.58657982223511, 32.770092808917987],
 				pitch: 0,
 				style: 'blank',
-				rotation: 0,
-				zoom: 6
+				zoom: 4.5,
+				dragEnable: false,
+				zoomEnable: true
 			})
 
 			const scene = new Scene({
-				id: 'customMap',
+				id: 'map',
 				map: MyMap,
 				logoVisible: false
 			});
@@ -314,11 +300,14 @@
 				.then(geo => {
 					console.log(geo.features)
 					const dataObj = {}
-					tempData.forEach(item => {
+					let sum
+					provinceData.forEach(item => {
 						dataObj[item.name] = item
+						console.log(item.memberNum)
+						sum += parseInt(item.memberNum)
 					})
 
-					console.log(dataObj)
+					console.log(dataObj, sum)
 
 					geo.features = geo.features.map(item => {
 						const name = item.properties.name
@@ -334,7 +323,8 @@
 					scene.on('loaded', () => {
 
 						const chinaPolygonLayer = new PolygonLayer({
-							autoFit: false
+							autoFit: false,
+
 						})
 							.source(geo);
 
@@ -342,22 +332,19 @@
 							.color(
 								'memberNum',
 								(memberNum) => {
+
 									let d = memberNum
+
+									console.log(typeof memberNum, typeof d)
+
 									return d > 100 ?
-										color[7] :
-										d > 60 ?
-											color[6] :
-											d > 50 ?
-												color[5] :
-												d > 40 ?
-													color[4] :
-													d > 30 ?
-														color[3] :
-														d > 20 ?
-															color[2] :
-															d > 10 ?
-																color[1] :
-																color[0];
+										color[3] :
+										d > 50 ?
+											color[2] :
+											d > 30 ?
+												color[1] :
+												d > 0 ? color[1] :
+													color[0];
 								}
 							)
 							// .color(
@@ -414,7 +401,7 @@
 									</div>
 									<div>
 										数量：${e.feature.properties.memberNum ? e.feature.properties.memberNum : 0}
-										</div>
+									</div>
 									`
 								)
 							scene.addPopup(popup)
@@ -423,36 +410,11 @@
 						const legend = new Control({
 							position: 'bottomright'
 						})
-						legend.onAdd = () => {
-							// let color =  ['#1947d9', '#243dc9' ,'#071a75', '#00fbff' ];
-							const color2 = [
-								"rgb(255,255,217)",
-								"rgb(237,248,177)",
-								"rgb(199,233,180)",
-								"rgb(127,205,187)",
-								"rgb(65,182,196)",
-								"rgb(29,145,192)",
-								"rgb(34,94,168)",
-								"rgb(12,44,132)"
-							];
-							let el = document.createElement('div')
-							el.className = "infolegend legend"
-							let grades = [0, 10, 20, 50, 100, 200, 500];
-							// for (let i = 0; i < grades.length; i++) {
-							// 	el.innerHTML +=
-							// 		'<i style="background:' +
-							// 		color2[i] +
-							// 		'"></i> ' +
-							// 		grades[i] +
-							// 		(grades[i + 1] ? "–" + grades[i + 1] + "<br>" : "+");
-							// }
 
-							return el
-						}
 						scene.addLayer(chinaPolygonLayer)
 						scene.addLayer(Layer2)
 						scene.addLayer(hightLayer)
-						scene.addControl(legend)
+						// scene.addControl(legend)
 					})
 				})
 		}
@@ -462,38 +424,21 @@
 				type: 1,
 				code: ''
 			})
-			const colors = ['#1947d9', '#071a75', '#243dc9'];
+
 			const scene = new Scene({
 				id: 'map',
 				map: new GaodeMap({
-					center: [105.58657982223511, 32.770092808917987],
+					center: [106.58657982223511, 40],
 					pitch: 0,
 					style: 'blank',
 					zoom: 4.5,
 					dragEnable: false,
-					zoomEnable: true
+					zoomEnable: false
 				}),
 				logoVisible: false
 			});
 
-
-			// const popup = new Popup({
-			// 	offsets: [0, 20],
-			// 	color: '#ff762e'
-			// }).setText('火蝶信息科技');
-			// const marker = new Marker()
-			// 	.setLnglat([120.58657982223511, 27.770092808917987])
-			// 	.setPopup(popup)
-
-
-			// scene.addMarker(marker)
-
-
-
-
 			scene.on('loaded', () => {
-
-
 				const drillLayer = new DrillDownLayer(scene, {
 					customTrigger: false,
 					data: [],
@@ -506,12 +451,12 @@
 						// coastlineWidth: 1,
 						// nationalStroke: '#ff762e',
 						depth: 1,
-						provinceStroke: '#10405a', // 省界线
+						provinceStroke: 'white', // 省界线
 						autoFit: false,
 						data: provinceData
 					},
 					city: {
-						cityStroke: '#10405a',
+						cityStroke: 'white',
 						cityStrokeWidth: 1,
 						autoFit: true,
 						// fill: {
@@ -519,10 +464,9 @@
 						// 		file: 'member'
 						// 	}
 						// }
-
 					},
 					country: {
-						cityStroke: '#10405a',
+						cityStroke: 'white',
 						cityStrokeWidth: 1,
 						autoFit: true,
 					},
@@ -531,28 +475,9 @@
 					fill: {
 						color: {
 							field: 'memberNum',
-							values: (memberNum) => {
-								let d = memberNum
-								return d > 100 ?
-									color[7] :
-									d > 60 ?
-										color[6] :
-										d > 40 ?
-											color[5] :
-											d > 25 ?
-												color[4] :
-												d > 15 ?
-													color[3] :
-													d > 10 ?
-														color[2] :
-														d > 5 ?
-															color[1] :
-															d > 0 ?
-																color[0] :
-																'white';
-							}
+							values: color
 						},
-						activeColor: '#00fbff'
+						// activeColor: '#00fbff',
 					},
 					label: {
 						size: 16,
@@ -568,31 +493,24 @@
 								`
 						},
 						// maxWidth: 40,
-
 					}
 				})
 
-				// const popup = new Popup({
-				// 	offsets: [0, 0],
-				// 	closeButton: false
-				// })
+				drillLayer.provinceLayer.on('mousemove', e => {
+					heightLayer.setData({
+						type: 'FeatureCollection',
+						features: [e.feature]
+					})
+				})
+
+				drillLayer.cityLayer.on('mousemove', e => {
+					heightLayer.setData({
+						type: 'FeatureCollection',
+						features: [e.feature]
+					})
+				})
 
 
-				// drillLayer.provinceLayer.on('mousemove', (e) => {
-				// 	// console.log(e.feature.properties)
-				// 	let i = e.feature.properties
-				// 	const popupHTML = `
-				// 			<p>省份
-				// 				${i.NAME_CHN} </p>
-				// 				<p>地区
-				// 			  ${i.memberNum ? i.memberNum : 0}</p><p>数值
-				// 			  ${i.x}</p>
-				// 		`
-				// 	popup.setLnglat([i.x, i.y])
-				// 	popup.setHTML(popupHTML)
-				// })
-
-				// scene.addPopup(popup)
 
 				drillLayer.provinceLayer.on('click', async (e) => {
 					let areacode = e.feature.properties.areacode
@@ -606,7 +524,6 @@
 					} else {
 						alert('该地区无数据')
 					}
-
 				})
 
 
@@ -627,14 +544,37 @@
 
 				})
 
+				const legend = new Control({
+					position: 'bottomright',
 
+				})
 
+				legend.onAdd = () => {
+					let el = document.createElement('ul')
+					el.className = 'infolegend legend'
+					for (let i = 0; i < color.length; i++) {
+						el.innerHTML += `
+								<li style="background:${color[i]}">
+								</li>
+							`
+					}
+					return el
+				}
+
+				const heightLayer = new LineLayer({
+					name: 'heightLight'
+				})
+					.source({
+						type: 'FeatureCollection',
+						features: []
+					})
+					.shape('line')
+					.size(4)
+					.color('#00fbff')
+
+				// scene.addControl(legend)
+				scene.addLayer(heightLayer)
 			})
-
-
-
-
-
 		}
 		// customDrillDownMap()
 		DrillDownMap()
