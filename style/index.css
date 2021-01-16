@@ -417,7 +417,7 @@ img {
 }
 
 #bg .zxdd {
-	display: none;
+	/* display: none; */
 	overflow: hidden;
 	width: 830px;
 	height: 350px;

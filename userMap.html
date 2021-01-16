@@ -19,14 +19,10 @@
 		</main>
 
 		<!-- 地图四角 -->
-		<div class="rahmen-top-left rahmen">
-		</div>
-		<div class="rahmen-top-right rahmen">
-		</div>
-		<div class="rahmen-bottom-left rahmen">
-		</div>
-		<div class="rahmen-bottom-right rahmen">
-		</div>
+		<img class="rahmen-top-left rahmen" src="./img/rahmen-icon.png" />
+		<img class="rahmen-top-right rahmen" src="./img/rahmen-icon.png" />
+		<img class="rahmen-bottom-left rahmen" src="./img/rahmen-icon.png" />
+		<img class="rahmen-bottom-right rahmen" src="./img/rahmen-icon.png" />
 		<!-- 图例 -->
 		<div class="map-lengen flex-row">
 			<div class="lengen-text flex-column">
@@ -41,8 +37,45 @@
 			</ul>
 		</div>
 
-		<div class="service-businesses-num">
-			
+		<!-- 商家服务数量 -->
+		<div class="service-businesses-num flex-column">
+			<p class="sbn-text">火蝶云已服务商家</p>
+			<div class="sbn-line"></div>
+			<p class="sbn-num" id="allBusinessNum"> 532<span>家</span> </p>
+		</div>
+		<!-- 中华人民共和国 -->
+		<div class="china flex-row">
+			<img class="location-icon" src="./img/location-icon.png" />
+			<p class="china-text">中华人民共和国</p>
+		</div>
+		<!-- 商家分布 -->
+		<div class="business-distribution">
+			<p class="bd-title">商家分布</p>
+			<div class="bd-box">
+				<table>
+					<tr>
+						<th>省份</th>
+						<th>市</th>
+						<th>区</th>
+						<th>商家名称</th>
+						<th>活跃用户</th>
+					</tr>
+					<tr>
+						<td>山西省</td>
+						<td>大同市</td>
+						<td>平城区</td>
+						<td>火蝶信息科技</td>
+						<td> 199946546 </td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<!-- 区域排行 -->
+		<div class="regional-ranking" id="regional-ranking">
+
+				<p class="regional-title">区域排名</p>
+				<p class="ranking-title">地区排名(Top10)</p>
+
 		</div>
 
 	</dvi>
@@ -56,7 +89,12 @@
 
 	<script src="./modules/l7.js"></script>
 	<script src="./modules/l7-district.js"></script>
+
+	<script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.g2-3.5.1/dist/g2.min.js"></script>
+	<script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.data-set-0.10.1/dist/data-set.min.js"></script>
+
 	<script src="./modules/axios.min.js"></script>
+	<script src="https://unpkg.com/@better-scroll/core@latest/dist/core.min.js"></script>
 	<script src="./modules/moment-with-locales.js"></script>
 
 	<script>
@@ -105,10 +143,24 @@
 	</script>
 
 	<script type="text/babel">
-
-		console.log(React)
-
+		moment.locale('zh-cn')
 		const { useState, useRef, useEffect } = React
+		// const RegionalRanking = () => {
+		// 	//区域排名
+		// 	return (
+		// 		<div className="regional-ranking">
+		// 		</div>
+		// 	)
+		// }
+
+		// // 商家分布图 
+		// const BusinessDistribution = () => {
+		// 	return (
+		// 		<div className="business-distribution">
+
+		// 		</div>
+		// 	)
+		// }
 
 		const Title = () => {
 			let timer
@@ -169,20 +221,20 @@
 			let linsenKey
 
 
-			useEffect(() => {
+			// useEffect(() => {
 
-				document.addEventListener('keydown', function (e) {
-					if (e && e.keyCode === 122) {
-					
-					} else if (e && e.keyCode === 27) {
-					
-					}
-				})
+			// 	document.addEventListener('keydown', function (e) {
+			// 		if (e && e.keyCode === 122) {
 
-				return () => {
+			// 		} else if (e && e.keyCode === 27) {
 
-				}
-			}, [])
+			// 		}
+			// 	})
+
+			// 	return () => {
+
+			// 	}
+			// }, [])
 
 
 
@@ -200,6 +252,9 @@
 								首页
 							</button>
 						</div>
+
+
+
 					</div>
 				</div>
 			)
@@ -276,6 +331,8 @@
 				type: 1,
 				code: ''
 			})
+
+			console.log(provinceData)
 
 
 			const MyMap = new GaodeMap({
@@ -425,6 +482,12 @@
 				code: ''
 			})
 
+			let sum = 0
+			provinceData.forEach(item => {
+				return sum += parseInt(item.memberNum)
+			})
+
+
 			const scene = new Scene({
 				id: 'map',
 				map: new GaodeMap({
@@ -439,6 +502,7 @@
 			});
 
 			scene.on('loaded', () => {
+
 				const drillLayer = new DrillDownLayer(scene, {
 					customTrigger: false,
 					data: [],
@@ -477,7 +541,7 @@
 							field: 'memberNum',
 							values: color
 						},
-						// activeColor: '#00fbff',
+						activeColor: '#00fbff',
 					},
 					label: {
 						size: 16,
@@ -573,11 +637,72 @@
 					.color('#00fbff')
 
 				// scene.addControl(legend)
-				scene.addLayer(heightLayer)
+				// scene.addLayer(heightLayer)
+
+				// let el = document.getElementById('allBusinessNum')
+				// console.log( el )
+				// el.innerHTML(`${sum}<span>家</span>`)
+
+
 			})
 		}
 		// customDrillDownMap()
 		DrillDownMap()
+	</script>
+
+	<script type="text/babel">
+
+		const data = [
+			{ time: '9:00-10:00', value: 30 },
+			{ time: '10:00-11:00', value: 90 },
+			{ time: '11:00-12:00', value: 50 },
+			{ time: '12:00-13:00', value: 30 },
+			{ time: '13:00-14:00', value: 70 }
+		];
+
+		const chart_ = new G2.Chart({
+			container: 'regional-ranking',
+			autoFit: true,
+			height: 500,
+		});
+
+		console.log(chart_)
+
+
+		chart_.data(data);
+		chart_.scale('value', {
+			alias: '销售额(万)',
+			nice: true,
+		});
+		chart_.axis('time', {
+			tickLine: null
+		});
+
+		chart_.tooltip({
+			showMarkers: false
+		});
+		chart_.interaction('active-region');
+
+		chart_.interval().position('time*value')
+			.style('time', val => {
+				if (val === '13:00-14:00') {
+					return {
+						fillOpacity: 0.4,
+						lineWidth: 1,
+						stroke: '#636363',
+						lineDash: [3, 2]
+					}
+				}
+				return {
+					fillOpacity: 1,
+					lineWidth: 0,
+					stroke: '#636363',
+					lineDash: [3, 2]
+				};
+			});
+
+		chart_.render();
+
 	</script>
 </body>
 
