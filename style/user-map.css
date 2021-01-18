@@ -276,16 +276,19 @@ html, body {
 	padding: 0 47px;
 	height: 245px;
 }
-table{
+
+table {
 	width: 100%;
 	color: #fff;
 	text-align: center;
 }
-th{
+
+th {
 	font-size: 20px;
 	font-weight: bold;
 }
-td{
+
+td {
 	font-size: 20px;
 	font-weight: 400;
 }
@@ -299,20 +302,117 @@ td{
 	background-image: url('../img/regional-rankings-bg.png');
 	background-size: 100% 100%;
 }
-.regional-title{
-	position: relative;
-	top: 30px;
-	left: 58px;
-	font-size: 24px;
-	font-weight: bold;
-	color: #fff;
+
+.regional {
+	box-sizing: border-box;
+	padding: 0 58px;
+	padding-top: 30px;
+	height: 235px;
 }
-.ranking-title{
-	position: relative;
-	left: 58px;
-	top: 209px;
+
+.regional-title {
 	font-size: 24px;
 	font-weight: bold;
 	color: #fff;
 }
 
+.regional-container {
+	justify-content: space-between;
+	box-sizing: border-box;
+	padding: 30px 34px 32px 63px;
+}
+
+.account-for-regional {
+	width: 160px;
+	height: 130px;
+}
+
+.regional-legend {
+	color: #fff;
+	font-size: 20px;
+	font-weight: 400;
+}
+
+.regional-legend>li {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.light-point {
+	display: block;
+	width: 16px;
+	height: 16px;
+	background-color: #fff;
+	border-radius: 50%;
+	margin-right: 20px;
+}
+
+.c1 {
+	background-color: #fff;
+	box-shadow: 0 0 5px 5px rgba(255, 255, 255, .5);
+}
+
+.c2 {
+	background-color: rgba(21, 120, 237, 1);
+	box-shadow: 0 0 5px 5px rgba(21, 120, 237, .5);
+}
+
+.c3 {
+	background-color: rgba(21, 120, 237, 1);
+	box-shadow: 0 0 5px 5px rgba(21, 120, 237, .5);
+}
+
+.c4 {
+	background-color: rgba(5, 198, 255, 1);
+	box-shadow: 0 0 5px 5px rgba(5, 198, 255, .5);
+}
+
+.c5 {
+	background-color: rgba(229, 102, 131, 1);
+	box-shadow: 0 0 5px 5px rgba(229, 102, 131, .5);
+}
+
+.regional-value {
+	display: block;
+	font-weight: bold;
+}
+
+.ranking {
+	box-sizing: border-box;
+	padding: 0 76px 58px 58px;
+	height: 235px;
+}
+
+.ranking-top {
+	justify-content: space-between;
+}
+
+.ranking-title {
+	font-size: 24px;
+	font-weight: bold;
+	color: #fff;
+}
+
+.top10 {
+	width: 100%;
+	height: 170px;
+	margin-top: 26px;
+}
+
+.select-area {
+	display: inline-block;
+	vertical-align: middle;
+	text-shadow: none;
+	border: none;
+	outline: none;
+	text-align: center;
+	background: linear-gradient(90deg, #3871BF 0%, #4DCED4 100%);
+
+	width: 85px;
+	height: 35px;
+	border-radius: 10px;
+	color: #fff;
+	font-size: 18px;
+	font-weight: bold;
+}

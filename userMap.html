@@ -70,13 +70,11 @@
 				</table>
 			</div>
 		</div>
-		<!-- 区域排行 -->
+		<!-- 区域排行
 		<div class="regional-ranking" id="regional-ranking">
-
 				<p class="regional-title">区域排名</p>
 				<p class="ranking-title">地区排名(Top10)</p>
-
-		</div>
+		</div> -->
 
 	</dvi>
 
@@ -90,8 +88,9 @@
 	<script src="./modules/l7.js"></script>
 	<script src="./modules/l7-district.js"></script>
 
-	<script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.g2-3.5.1/dist/g2.min.js"></script>
-	<script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.data-set-0.10.1/dist/data-set.min.js"></script>
+	<!-- <script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.g2-3.5.1/dist/g2.min.js"></script> -->
+	<!-- <script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.data-set-0.10.1/dist/data-set.min.js"></script> -->
+	<script type="text/javascript" src="./modules/charts.min.js"></script>
 
 	<script src="./modules/axios.min.js"></script>
 	<script src="https://unpkg.com/@better-scroll/core@latest/dist/core.min.js"></script>
@@ -145,19 +144,122 @@
 	<script type="text/babel">
 		moment.locale('zh-cn')
 		const { useState, useRef, useEffect } = React
-		// const RegionalRanking = () => {
-		// 	//区域排名
-		// 	return (
-		// 		<div className="regional-ranking">
-		// 		</div>
-		// 	)
-		// }
+
+		const RegionalRanking = () => {
+			const { Column, Rose } = charts
+
+			const color = ['#fff', '#E66784', '#05C6FF', '#01F1E8', '#1578ED']
+
+			const rosedata = [
+				{
+					type: '华南区',
+					value: 900,
+				},
+				{
+					type: '华东区',
+					value: 1000,
+				},
+				{
+					type: '西南区',
+					value: 800,
+				},
+				{
+					type: '华中区',
+					value: 6165,
+				},
+				{
+					type: '华北区',
+					value: 4165,
+				}
+			];
+			const roseConfig = {
+				data: rosedata,
+				xField: 'type',
+				yField: 'value',
+				seriesField: 'type',
+				radius: 1,
+				innerRadius: .3,
+				legend: false,
+				sectorStyle: {
+					stroke: '#161d31'
+				},
+				color: color,
+				label: {
+					style: {
+						fill: '#01F1E8',
+						opacity: 0,
+						fontSize: 12
+					},
+					rotate: true
+				}
+
+			};
+
+			const data = [
+				{ year: '1991', value: 3 },
+				{ year: '1992', value: 4 },
+				{ year: '1993', value: 3.5 },
+				{ year: '1994', value: 5 },
+				{ year: '1995', value: 4.9 },
+				{ year: '1996', value: 6 },
+				{ year: '1997', value: 7 },
+				{ year: '1998', value: 9 },
+				{ year: '1999', value: 13 },
+			];
+			const columnConfig = {
+				data,
+				autoFit: true,
+				xField: 'year',
+				yField: 'value',
+				point: {
+					size: 5,
+					shape: 'diamond',
+				},
+			};
+
+			//区域排名
+			return (
+				<div className="regional-ranking" id="regional-ranking">
+
+					<div className="regional">
+						<p className="regional-title">区域排名</p>
+						<div className="regional-container flex-row">
+							<div className="account-for-regional">
+								<Rose {...roseConfig} />
+							</div>
+							<ul className="regional-legend ">
+								<li> <span className="light-point c1"  ></span> 华南区： <span className="regional-value" style={{ color: '#fff' }} >1000</span></li>
+								<li> <span className="light-point c2" ></span>华东区： <span className="regional-value" style={{ color: '#1578ED' }}>1000</span></li>
+								<li> <span className="light-point c3"></span>西南区： <span className="regional-value" style={{ color: '#01F1E8' }}>1000</span></li>
+								<li> <span className="light-point c4" ></span>华中区： <span className="regional-value" style={{ color: '#05C6FF' }}>1000</span></li>
+								<li> <span className="light-point c5" ></span>华北区： <span className="regional-value" style={{ color: '#E66784' }}>1000</span></li>
+							</ul>
+						</div>
+					</div>
+
+					<div className="ranking">
+						<div class="ranking-top flex-row">
+							<p className="ranking-title">地区排名(Top10)</p>
+							<select name="" className='select-area' id="">
+								<option value="">省份</option>
+								<option value="30001">浙江省</option>
+								<option value="30001">浙江省</option>
+							</select>
+						</div>
+						<div className="top10">
+							<Column {...columnConfig} />
+						</div>
+					</div>
+
+
+				</div>
+			)
+		}
 
 		// // 商家分布图 
 		// const BusinessDistribution = () => {
 		// 	return (
 		// 		<div className="business-distribution">
-
 		// 		</div>
 		// 	)
 		// }
@@ -252,6 +354,8 @@
 								首页
 							</button>
 						</div>
+
+						<RegionalRanking />
 
 
 
@@ -648,61 +752,6 @@
 		}
 		// customDrillDownMap()
 		DrillDownMap()
-	</script>
-
-	<script type="text/babel">
-
-		const data = [
-			{ time: '9:00-10:00', value: 30 },
-			{ time: '10:00-11:00', value: 90 },
-			{ time: '11:00-12:00', value: 50 },
-			{ time: '12:00-13:00', value: 30 },
-			{ time: '13:00-14:00', value: 70 }
-		];
-
-		const chart_ = new G2.Chart({
-			container: 'regional-ranking',
-			autoFit: true,
-			height: 500,
-		});
-
-		console.log(chart_)
-
-
-		chart_.data(data);
-		chart_.scale('value', {
-			alias: '销售额(万)',
-			nice: true,
-		});
-		chart_.axis('time', {
-			tickLine: null
-		});
-
-		chart_.tooltip({
-			showMarkers: false
-		});
-		chart_.interaction('active-region');
-
-		chart_.interval().position('time*value')
-			.style('time', val => {
-				if (val === '13:00-14:00') {
-					return {
-						fillOpacity: 0.4,
-						lineWidth: 1,
-						stroke: '#636363',
-						lineDash: [3, 2]
-					}
-				}
-				return {
-					fillOpacity: 1,
-					lineWidth: 0,
-					stroke: '#636363',
-					lineDash: [3, 2]
-				};
-			});
-
-		chart_.render();
-
 	</script>
 </body>
 
