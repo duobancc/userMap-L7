@@ -400,15 +400,14 @@ td {
 	margin-top: 26px;
 }
 
+
+
 .select-area {
-	display: inline-block;
 	vertical-align: middle;
 	text-shadow: none;
 	border: none;
 	outline: none;
-	text-align: center;
 	background: linear-gradient(90deg, #3871BF 0%, #4DCED4 100%);
-
 	width: 85px;
 	height: 35px;
 	border-radius: 10px;

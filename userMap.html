@@ -48,34 +48,6 @@
 			<img class="location-icon" src="./img/location-icon.png" />
 			<p class="china-text">中华人民共和国</p>
 		</div>
-		<!-- 商家分布 -->
-		<div class="business-distribution">
-			<p class="bd-title">商家分布</p>
-			<div class="bd-box">
-				<table>
-					<tr>
-						<th>省份</th>
-						<th>市</th>
-						<th>区</th>
-						<th>商家名称</th>
-						<th>活跃用户</th>
-					</tr>
-					<tr>
-						<td>山西省</td>
-						<td>大同市</td>
-						<td>平城区</td>
-						<td>火蝶信息科技</td>
-						<td> 199946546 </td>
-					</tr>
-				</table>
-			</div>
-		</div>
-		<!-- 区域排行
-		<div class="regional-ranking" id="regional-ranking">
-				<p class="regional-title">区域排名</p>
-				<p class="ranking-title">地区排名(Top10)</p>
-		</div> -->
-
 	</dvi>
 
 	<!-- 加载 React。-->
@@ -87,13 +59,9 @@
 
 	<script src="./modules/l7.js"></script>
 	<script src="./modules/l7-district.js"></script>
-
-	<!-- <script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.g2-3.5.1/dist/g2.min.js"></script> -->
-	<!-- <script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.data-set-0.10.1/dist/data-set.min.js"></script> -->
 	<script type="text/javascript" src="./modules/charts.min.js"></script>
 
 	<script src="./modules/axios.min.js"></script>
-	<script src="https://unpkg.com/@better-scroll/core@latest/dist/core.min.js"></script>
 	<script src="./modules/moment-with-locales.js"></script>
 
 	<script>
@@ -101,8 +69,8 @@
 		const proBaseURL = 'https://www.lexiangpingou.cn/summary_api.php'
 		const instance = axios.create({
 			baseURL: proBaseURL,
-			timeout: 5000,
-			method: 'post',
+			timeout: 6000,
+			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			}
@@ -196,25 +164,62 @@
 			};
 
 			const data = [
-				{ year: '1991', value: 3 },
-				{ year: '1992', value: 4 },
-				{ year: '1993', value: 3.5 },
-				{ year: '1994', value: 5 },
-				{ year: '1995', value: 4.9 },
-				{ year: '1996', value: 6 },
-				{ year: '1997', value: 7 },
-				{ year: '1998', value: 9 },
-				{ year: '1999', value: 13 },
+				{ area: '浙江', value: 500 },
+				{ area: '山西', value: 350 },
+				{ area: '江苏', value: 300 },
+				{ area: '河南', value: 300 },
+				{ area: '河北', value: 270 },
+				{ area: '陕西', value: 130 },
+				{ area: '上海', value: 70 },
+				{ area: '广东', value: 180 },
+				{ area: '黑龙江', value: 100 },
+				{ area: '北京', value: 30 },
+
 			];
 			const columnConfig = {
 				data,
 				autoFit: true,
-				xField: 'year',
+				xField: 'area',
 				yField: 'value',
 				point: {
 					size: 5,
 					shape: 'diamond',
 				},
+				columnStyle: {
+					fill: 'l(270) 0:#1e3945 1:#47d6d9',
+					fillOpacity: 1,
+					lineOpacity: .5,
+				},
+				xAxis: {
+					grid: null,
+					label: {
+						style: {
+							fill: '#fff',
+							fontSize: 14,
+							fontWeight: 400
+						}
+					}
+
+				},
+				yAxis: {
+					grid: {
+						line: {
+							style: {
+								stroke: '#00FBFF',
+								opacity: .6
+							}
+						}
+					},
+					label: {
+						style: {
+							fill: '#00FBFF',
+							fontSize: 8,
+							fontWeight: 400
+						}
+					}
+
+				},
+
 			};
 
 			//区域排名
@@ -238,8 +243,9 @@
 					</div>
 
 					<div className="ranking">
-						<div class="ranking-top flex-row">
+						<div className="ranking-top flex-row">
 							<p className="ranking-title">地区排名(Top10)</p>
+
 							<select name="" className='select-area' id="">
 								<option value="">省份</option>
 								<option value="30001">浙江省</option>
@@ -256,13 +262,74 @@
 			)
 		}
 
-		// // 商家分布图 
-		// const BusinessDistribution = () => {
-		// 	return (
-		// 		<div className="business-distribution">
-		// 		</div>
-		// 	)
-		// }
+		// 商家分布图 
+		const BusinessDistribution = () => {
+
+			const [data, setData] = useState([])
+
+			// let a = [1,2,5,4,6]
+			// a.shift()
+			// a.push()
+
+
+			useEffect(() => {
+				request({
+					data: {
+						action: 'area_distributed',
+						code: "",
+						type: 1,
+					}
+				}).then(res => {
+					res.status === 1002 && setData(res.data)
+					res.status !== 1002 && alert('接口错误')
+				})
+
+				return () => {
+
+				}
+			}, [])
+
+			// setInterval( () => {
+
+			// 	console.log(data.length)
+
+			// }, 2000)
+
+
+			return (
+				<div className="business-distribution">
+					<p className="bd-title">商家分布</p>
+					<div className="bd-box">
+						<table>
+							<thead>
+								<tr>
+									<th>省份</th>
+									<th>市</th>
+									<th>区</th>
+									<th>商家名称</th>
+									<th>活跃用户</th>
+								</tr>
+							</thead>
+							<tbody>
+								{
+									data.length > 1 &&
+									data.slice(0, 7).map((item, key) => {
+										return <tr key={key + item.uniacid}>
+											<td>{item.province ? item.province : '未知'}</td>
+											<td>{item.city ? item.city : '未知'}</td>
+											<td>{item.district ? item.district : '未知' }</td>
+											<td>{item.name}</td>
+											<td> {item.num} </td>
+										</tr>
+									})
+								}
+							</tbody>
+
+						</table>
+					</div>
+				</div>
+			)
+		}
 
 		const Title = () => {
 			let timer
@@ -355,6 +422,7 @@
 							</button>
 						</div>
 
+						<BusinessDistribution />
 						<RegionalRanking />
 
 
@@ -579,6 +647,7 @@
 					})
 				})
 		}
+
 
 		const DrillDownMap = async () => {
 			let provinceData = await getAreaData({
