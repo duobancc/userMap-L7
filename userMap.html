@@ -111,37 +111,47 @@
 
 	<script type="text/babel">
 		moment.locale('zh-cn')
-		const { useState, useRef, useEffect } = React
+		const { useState, useRef, useEffect, memo } = React
 
-		const RegionalRanking = () => {
+		const RegionalRanking = memo(() => {
+
+			const selectRef = useRef()
 			const { Column, Rose } = charts
+			const [ranking, setRanking] = useState([])
+			const [regional, setRegional] = useState([])
+
+
+			useEffect(() => {
+				const getRanking = request({
+					data: {
+						action: 'Regional_ranking',
+						code: "",
+						type: 1,
+					}
+				})
+				const getRegional = request({
+					data: {
+						action: 'area_sort',
+						type: 0
+					}
+				})
+
+				axios.all([getRanking, getRegional]).then(axios.spread((ran, reg) => {
+					reg.status === 200 && setRegional(reg.data)
+					reg.status !== 200 && alert('接口错误')
+					ran.status === 1002 && setRanking(ran.data)
+					ran.status !== 1002 && alert('接口错误')
+				}))
+
+				return () => {
+
+				}
+			}, [])
 
 			const color = ['#fff', '#E66784', '#05C6FF', '#01F1E8', '#1578ED']
 
-			const rosedata = [
-				{
-					type: '华南区',
-					value: 900,
-				},
-				{
-					type: '华东区',
-					value: 1000,
-				},
-				{
-					type: '西南区',
-					value: 800,
-				},
-				{
-					type: '华中区',
-					value: 6165,
-				},
-				{
-					type: '华北区',
-					value: 4165,
-				}
-			];
 			const roseConfig = {
-				data: rosedata,
+				data: regional,
 				xField: 'type',
 				yField: 'value',
 				seriesField: 'type',
@@ -163,24 +173,11 @@
 
 			};
 
-			const data = [
-				{ area: '浙江', value: 500 },
-				{ area: '山西', value: 350 },
-				{ area: '江苏', value: 300 },
-				{ area: '河南', value: 300 },
-				{ area: '河北', value: 270 },
-				{ area: '陕西', value: 130 },
-				{ area: '上海', value: 70 },
-				{ area: '广东', value: 180 },
-				{ area: '黑龙江', value: 100 },
-				{ area: '北京', value: 30 },
-
-			];
 			const columnConfig = {
-				data,
+				data: ranking,
 				autoFit: true,
-				xField: 'area',
-				yField: 'value',
+				xField: 'name',
+				yField: 'memberNum',
 				point: {
 					size: 5,
 					shape: 'diamond',
@@ -197,9 +194,9 @@
 							fill: '#fff',
 							fontSize: 14,
 							fontWeight: 400
-						}
+						},
+						autoRotate: false
 					}
-
 				},
 				yAxis: {
 					grid: {
@@ -217,27 +214,41 @@
 							fontWeight: 400
 						}
 					}
-
 				},
+				scrollbar: {
+					type: 'horizontal',
+					backgroundStyle: {
+						fill: '#fff',
+						color: '#fff',
+						backgroundColor: '#fff'
+					},
+					handlerStyle: {
+						fill: '#fff',
+						color: '#fff',
+						backgroundColor: '#fff'
+
+
+					}
+				}
+
 
 			};
 
-			//区域排名
 			return (
+				regional.length > 1 && ranking.length > 1 &&
 				<div className="regional-ranking" id="regional-ranking">
-
 					<div className="regional">
 						<p className="regional-title">区域排名</p>
 						<div className="regional-container flex-row">
 							<div className="account-for-regional">
-								<Rose {...roseConfig} />
+								{regional.length > 1 && <Rose {...roseConfig} />}
 							</div>
 							<ul className="regional-legend ">
-								<li> <span className="light-point c1"  ></span> 华南区： <span className="regional-value" style={{ color: '#fff' }} >1000</span></li>
-								<li> <span className="light-point c2" ></span>华东区： <span className="regional-value" style={{ color: '#1578ED' }}>1000</span></li>
-								<li> <span className="light-point c3"></span>西南区： <span className="regional-value" style={{ color: '#01F1E8' }}>1000</span></li>
-								<li> <span className="light-point c4" ></span>华中区： <span className="regional-value" style={{ color: '#05C6FF' }}>1000</span></li>
-								<li> <span className="light-point c5" ></span>华北区： <span className="regional-value" style={{ color: '#E66784' }}>1000</span></li>
+								<li> <span className="light-point c1"  ></span> 华南区： <span className="regional-value" style={{ color: '#fff' }} > {regional[0].value} </span></li>
+								<li> <span className="light-point c2" ></span>华东区： <span className="regional-value" style={{ color: '#1578ED' }}> {regional[1].value} </span></li>
+								<li> <span className="light-point c3"></span>西南区： <span className="regional-value" style={{ color: '#01F1E8' }}> {regional[2].value} </span></li>
+								<li> <span className="light-point c4" ></span>华中区： <span className="regional-value" style={{ color: '#05C6FF' }}> {regional[3].value} </span></li>
+								<li> <span className="light-point c5" ></span>华北区： <span className="regional-value" style={{ color: '#E66784' }}> {regional[4].value} </span></li>
 							</ul>
 						</div>
 					</div>
@@ -246,10 +257,26 @@
 						<div className="ranking-top flex-row">
 							<p className="ranking-title">地区排名(Top10)</p>
 
-							<select name="" className='select-area' id="">
-								<option value="">省份</option>
-								<option value="30001">浙江省</option>
-								<option value="30001">浙江省</option>
+							<select  className='select-area' id="" onChange={(e) => {
+								console.log(e.target.value)
+
+								request({
+									data: {
+										action: 'Regional_ranking',
+										code: "",
+										type: e.target.value,
+									}
+								}).then(ran => {
+									ran.status === 1002 && setRanking(ran.data)
+									ran.status !== 1002 && alert('接口错误')
+								})
+
+							}}
+							>
+								<option value="0">请选择</option>
+								<option value="1">省份</option>
+								<option value="2">城市</option>
+								<option value="3">区域</option>
 							</select>
 						</div>
 						<div className="top10">
@@ -260,17 +287,15 @@
 
 				</div>
 			)
-		}
+		})
 
 		// 商家分布图 
-		const BusinessDistribution = () => {
+		const BusinessDistribution = memo(() => {
 
+			const timer = useRef()
+			const dataLenth = useRef()
 			const [data, setData] = useState([])
-
-			// let a = [1,2,5,4,6]
-			// a.shift()
-			// a.push()
-
+			const [number, setNumber] = useState({ start: -1, end: 6 })
 
 			useEffect(() => {
 				request({
@@ -280,21 +305,38 @@
 						type: 1,
 					}
 				}).then(res => {
+					dataLenth.current = res.data.length
 					res.status === 1002 && setData(res.data)
 					res.status !== 1002 && alert('接口错误')
 				})
 
-				return () => {
 
+				timer.current = setInterval(() => {
+					setNumber((pre) => {
+						// console.log(pre, new Date().getTime(), dataLenth.current)
+						let update = {}
+						update.start = pre.start
+						update.end = pre.end
+
+						if (dataLenth.current > update.end) {
+							update.start += 1
+							update.end += 1
+							return { ...pre, ...update }
+						} else {
+							update.start = -1
+							update.end = 6
+							return { ...pre, ...update }
+						}
+					})
+				}, 1000)
+
+				return () => {
+					clearInterval(timre.current)
 				}
 			}, [])
 
-			// setInterval( () => {
 
-			// 	console.log(data.length)
-
-			// }, 2000)
-
+			// console.log('渲染商家分布', number)
 
 			return (
 				<div className="business-distribution">
@@ -313,11 +355,11 @@
 							<tbody>
 								{
 									data.length > 1 &&
-									data.slice(0, 7).map((item, key) => {
+									data.slice(number.start, number.end).map((item, key) => {
 										return <tr key={key + item.uniacid}>
 											<td>{item.province ? item.province : '未知'}</td>
 											<td>{item.city ? item.city : '未知'}</td>
-											<td>{item.district ? item.district : '未知' }</td>
+											<td>{item.district ? item.district : '未知'}</td>
 											<td>{item.name}</td>
 											<td> {item.num} </td>
 										</tr>
@@ -329,9 +371,9 @@
 					</div>
 				</div>
 			)
-		}
+		})
 
-		const Title = () => {
+		const Title = memo(() => {
 			let timer
 			const textGradient = useRef()
 
@@ -358,9 +400,9 @@
 				<p className="user-title" ref={textGradient}>火蝶云用户分布中心
 				</p>
 			)
-		}
+		})
 
-		const Timer = props => {
+		const Timer = memo(props => {
 			let timer = null
 			const [date, setDate] = useState('')
 			useEffect(() => {
@@ -374,15 +416,12 @@
 				}
 			}, [])
 
-
-
-
 			return (
 				<div className="timer-date">
 					{date}
 				</div>
 			)
-		}
+		})
 
 		const TimerDate = () => {
 			const [title, setTitle] = useState(false)
@@ -481,7 +520,7 @@
 			"#1947D9",
 			"#243DC9",
 		];
-		color.reverse()
+		// color.reverse()
 		// #222a41
 		// #161c2c
 		const {

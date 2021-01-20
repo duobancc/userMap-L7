@@ -25,9 +25,9 @@ html, body {
 }
 
 .popup-html {
-	background-color: antiquewhite;
+	/* background-color: antiquewhite; */
 	opacity: .5;
-	padding: 20px 20px;
+	/* padding: 20px 20px; */
 }
 
 .popup-html>p {
@@ -281,6 +281,7 @@ table {
 	width: 100%;
 	color: #fff;
 	text-align: center;
+	table-layout: fixed;
 }
 
 th {
@@ -291,6 +292,10 @@ th {
 td {
 	font-size: 20px;
 	font-weight: 400;
+	word-break:keep-all;/* 不换行 */ 
+	white-space: nowrap;
+	text-overflow:ellipsis; 
+	overflow:hidden;
 }
 
 .regional-ranking {
@@ -335,7 +340,7 @@ td {
 
 .regional-legend>li {
 	display: flex;
-	justify-content: center;
+	justify-content: flex-start;
 	align-items: center;
 }
 
@@ -411,7 +416,7 @@ td {
 	width: 85px;
 	height: 35px;
 	border-radius: 10px;
-	color: #fff;
+	color: #00fbff;
 	font-size: 18px;
 	font-weight: bold;
 }
