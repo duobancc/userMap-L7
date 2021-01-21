@@ -1,0 +1,2 @@
+moment.locale('zh-cn')
+
