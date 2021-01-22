@@ -1,5 +1,5 @@
 const { useState, useRef, useEffect, memo, Fragment } = React
-
+console.log(this)
 const { Scene, GaodeMap, District, Popup } = L7
 const { DrillDownLayer } = District
 
@@ -42,7 +42,7 @@ const RegionalRanking = memo(() => {
   const color = ['#fff', '#1578ED', '#01F1E8', '#05C6FF', '#E66784', 'red']
 
   const roseConfig = {
-    data: regional,
+    data: regional.filter(item => item.type !== '未知'),
     xField: 'type',
     yField: 'value',
     seriesField: 'type',
@@ -61,7 +61,6 @@ const RegionalRanking = memo(() => {
       },
       rotate: true
     }
-
   };
 
   const columnConfig = {
@@ -117,8 +116,6 @@ const RegionalRanking = memo(() => {
         fill: '#fff',
         color: '#fff',
         backgroundColor: '#fff'
-
-
       }
     }
 
@@ -314,7 +311,6 @@ const Timer = memo(props => {
   )
 })
 
-
 // 页面top 内容
 const Header = memo(() => {
 
@@ -327,7 +323,9 @@ const Header = memo(() => {
         <button className="fullScreen btn" onClick={fullScreen}>
           {title ? '退出全屏' : '全屏'}
         </button>
-        <button className="back btn" onClick={() => { location.href = location.href.replace('userMap.html', 'index.html') }}>
+        <button className="back btn" onClick={() => {
+          location.href = `https://www.lexiangpingou.cn/web/index.php?c=site&a=entry&m=lexiangpingou&do=data&ac=visualization_data&op=dashuju&uniacid=${getParamsString('uniacid')}&mode=${getParamsString('mode')}`
+        }}>
           首页
 				</button>
       </div>
@@ -385,6 +383,7 @@ const Maps = memo(props => {
   // ];
   // const color = ['#B8E1FF', '#7DAAFF', '#3D76DD', '#0047A5', '#001D70'];
 
+  // 计算区间
   const getSection = (array) => {
     const max = Math.max.apply(Math, array.map(item => item.memberNum))
     const min = Math.min.apply(Math, array.map(item => item.memberNum))
@@ -397,12 +396,10 @@ const Maps = memo(props => {
   useEffect(() => {
 
     // 计算颜色分布
-    console.log(getSection(props.provinceData))
-
     const scene = new Scene({
       id: 'map',
       map: new GaodeMap({
-        center: [106.58657982223511, 35],
+        center: [106.58657982223511, 38],
         pitch: 0,
         style: 'blank',
         zoom: 4.25,
@@ -541,35 +538,116 @@ const Maps = memo(props => {
 
 })
 
+const TotalNumberOfFans = memo(() => {
+
+  const [totalNumberOfFans, setTotalNumberOfFans] = useState("")
+  const addFans = useRef()
+  const randomNumberRef = useRef()
+  // const cleanRef = useRef()
+
+
+  useEffect(() => {
+    request({ data: { action: 'member_total' } }).then(res => {
+      if (res.status === 200) {
+
+        console.log(res.data.length, res.data.split(""))
+
+        setTotalNumberOfFans(res.data)
+        addFans.current = setInterval(() => {
+          setTotalNumberOfFans((pre) => {
+            return parseInt(pre) + 1
+          })
+        }, 3000)
+      } else {
+        alert('获取粉丝数据出错')
+      }
+    })
+
+    // cleanRef.current = setInterval(() => {
+    //   let random = getRandomNumber(0, 9)
+    //   console.log(randomNumberRef)
+    //   randomNumberRef.current.style.transform = `translate(-50%, -${random * 10}%)`
+    // }, 6000)
+
+    return () => {
+      clearInterval(addFans.current)
+      // clearInterval(cleanRef.current)
+    }
+  }, [])
+  return (
+    <Fragment>
+      <div className="box flex-row" >
+        {
+          totalNumberOfFans && totalNumberOfFans.toString().split("").map((item, index) => {
+            if (!isNaN(item)) {
+              return <p className="box-item" key={item + index}>
+                <span ref={randomNumberRef} style={{ transform: `translate(-50%, -${parseInt(item) * 10}%)` }} num={item}>0123456789</span>
+              </p>
+            } else {
+              return <span key={index}></span>
+            }
+          })
+        }
+
+      </div>
+    </Fragment>
+
+  )
+
+
+
+  // 设置每一位数字的偏移
+  function setNumberTransform() {
+    let numberItems = randomNumberRef.current
+    let numberArr = TotalNumberOfFans.filter(item => !isNaN(item))
+    for (let index = 0; index < numberItems.length; index++) {
+      let elem = numberItems[index]
+      elem.style.transform = `translate(-50%, -${numberArr[index] * 10}%)`
+    }
+  }
+
+
+
+  function getRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min)
+  }
+
+})
 
 const UserMap = memo(() => {
 
   const [mapData, setMapData] = useState({})
-
   const chinaRef = useRef()
+
+
+
 
   useEffect(() => {
 
     const initMapData = request({ data: { action: 'area_statistics', type: 1, code: '' } })
-    const totalNumberOfFans = request({ data: { action: 'member_total' } })
     const totalNumberOfUser = request({ data: { action: 'uniacid_total' } })
-    axios.all([totalNumberOfFans, initMapData, totalNumberOfUser]).then(axios.spread((fans, map,total) => {
+    axios.all([initMapData, totalNumberOfUser]).then(axios.spread((map, total) => {
 
       if (map.status === 1002) {
         // let sum = 0
         // map.data.forEach(item => {
         //   return sum += parseInt(item.memberNum)
         // })
-        setMapData({ provinceData: map.data, totalNumberOfUser: total.data, totalNumberOfFans: fans.data })
+        setMapData({ provinceData: map.data, totalNumberOfUser: total.data })
       } else {
         alert('获取地图数据出错')
       }
 
     }))
 
+
+
     return () => {
     }
   }, [])
+
+
+
 
   return (
 
@@ -596,29 +674,24 @@ const UserMap = memo(() => {
         </ul>
       </div>
 
-    
+
       <div className="flex-row map-top">
         <div className="service-businesses-num flex-column">
           <p className="sbn-text">火蝶云已服务商家</p>
           <div className="sbn-line"></div>
           <p className="sbn-num" id="allBusinessNum"> {mapData.totalNumberOfUser} <span>家</span> </p>
         </div>
-        <div className="totalNumberOfFans"  >
-         {mapData.totalNumberOfFans} <span style={{ fontSize: '24px'}}>人</span>
-        </div>
+
+
+
+        <TotalNumberOfFans />
       </div>
-
-
-
 
       {/* <!-- 中华人民共和国 --> */}
       <div className="china flex-row" ref={chinaRef}>
         <img className="location-icon" src="./img/location-icon.png" />
         <p className="china-text">中华人民共和国</p>
       </div>
-
-
-
     </div>
   )
 

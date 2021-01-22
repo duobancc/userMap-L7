@@ -97,10 +97,14 @@
 	color: #fff;
 }
 
+@font-face{ font-family: 'electronicFont'; src: url("./DS-DIGII.TTF") }
+
 .totalNumberOfFans{
 	color: #fff;
-	font-size: 44px;
-	font-weight: 400;
+	font-size: 60px;
+	font-weight: 500;
+	font-family: 'electronicFont';
+	
 }
 
 .sbn-text {
@@ -427,4 +431,35 @@ td {
 	color: #00fbff;
 	font-size: 18px;
 	font-weight: bold;
+}
+
+.box{
+	color: #fff;
+}
+
+.box-item {
+  position: relative;
+  display: inline-block;
+  width: 54px;
+  height: 82px;
+  /* 背景图片 */
+  background: url(../img/number-bg.png) no-repeat center center;
+  background-size: 100% 100%;
+	font-size: 62px;
+	font-family: 'electronicFont';
+  line-height: 82px;
+	text-align: center;
+	writing-mode: vertical-lr;
+	text-orientation: upright;
+	overflow: hidden;
+	
+}
+
+.box-item span{
+	position: absolute;
+	top: 10px;
+	left: 50%;
+	transform: translate(-50%,-50%);
+	transition: transform 1s ease-in-out;
+	letter-spacing: 10px;
 }
