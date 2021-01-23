@@ -249,7 +249,7 @@ const BusinessDistribution = memo(() => {
                   <td>{item.province ? item.province : '未知'}</td>
                   <td>{item.city ? item.city : '未知'}</td>
                   <td>{item.district ? item.district : '未知'}</td>
-                  <td>{item.name}</td>
+                  <td>{item.name.replace( item.name.substr(2,2), '**')}</td>
                   <td> {item.num} </td>
                 </tr>
               })

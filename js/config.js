@@ -1,5 +1,7 @@
 moment.locale('zh-cn')
 
+const Evn = 'pro'
+
 function getParamsString(name) {
   // 获取URL中的code
   var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
